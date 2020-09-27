@@ -1,0 +1,50 @@
+
+# Install Servless Operator
+# Create Knative Serving in knative-serving namespace
+# Create Knative Eventing in knative-eventing namespace
+
+# Create broker in resource-scheduler namespace
+kubectl label namespace resource-scheduler knative-eventing-injection=enabled
+
+# Check for Broker and Pods
+watch kubectl --namespace knativetutorial get broker
+watch kubectl get pods
+
+# Build Project, Docker Image, and Push to Docker Hub
+# then create the knative service
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-server . \
+&& docker push docker.io/boosey/resource-command-server \ 
+&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-commands/src/main/k8s/ResourceCommandsService.yaml
+
+# Create Trigger
+kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-commands/src/main/k8s/AddResourceTrigger.yaml
+# Verify triggers
+kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
+kubectl get trigger addresource -o jsonpath='{.status.subscriberUri}'
+
+# Run
+# Tail logs
+stern funq user-container
+# Get Broker URL
+kubectl get broker default -o jsonpath='{.status.address.url}'
+# Start curler pod
+kubectl -n resource-scheduler exec -it curler -- /bin/bash
+
+# Test
+curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
+-X POST \
+-H "Ce-Id: 1234" \
+-H "Ce-Specversion: 1.0" \
+-H "Ce-Type: addResource" \
+-H "Ce-Source: curl" \
+-H "Content-Type: application/json" \
+-d '"Start"'
+
+
+# Update Service
+# IMPORTANT: ResourceCommandService.yaml -> update spec:template:metadata:namespace
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-server . \
+&& docker push docker.io/boosey/resource-command-server \
+&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-commands/src/main/k8s/ResourceCommandsService.yaml
