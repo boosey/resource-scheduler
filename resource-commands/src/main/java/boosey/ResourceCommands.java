@@ -11,9 +11,9 @@ public class ResourceCommands {
 
     @Funq
     @CloudEventMapping(trigger = "addResource", responseSource = "handleAddResource", responseType = "addedResource")
-    public String handleAddResource(String input, @Context CloudEvent event) {
-        log.info("*** add resource *** reset: " + input);
-        return input + "::" + "annotatedChain";
+    public String handleAddResource(AddResourceEventData evtData, @Context CloudEvent event) {
+        log.info("*** add resource *** evtData: " + evtData + event);
+        return evtData + "::" + "annotatedChain";
     }
 
 }

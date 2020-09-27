@@ -39,7 +39,7 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 -H "Ce-Type: addResource" \
 -H "Ce-Source: curl" \
 -H "Content-Type: application/json" \
--d '"Start"'
+-d '{"name" : "Space 204", "available" : "true"}'
 
 
 # Update Service
