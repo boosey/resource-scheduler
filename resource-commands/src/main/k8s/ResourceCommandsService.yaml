@@ -1,0 +1,13 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: resource-commands-server
+spec:
+  template:
+    metadata:
+      name: resource-commands-server
+      annotations:
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+        - image: docker.io/boosey/funqy-knative-events-quickstart
