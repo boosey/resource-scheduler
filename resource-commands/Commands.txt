@@ -48,3 +48,17 @@ mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-server . \
 && docker push docker.io/boosey/resource-command-server \
 && kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-commands/src/main/k8s/ResourceCommandsService.yaml
+
+
+# Create mongodb from mongo supplied operator
+# Create API Key secret
+kubectl -n resource-scheduler \
+  create secret generic resource-scheduler-mongo-cloud-manager-api-key \
+  --from-literal="user=56fa4b37-f68b-4662-8004-b6db9371dff7" \
+  --from-literal="publicApiKey=56fa4b37-f68b-4662-8004-b6db9371dff7"
+
+# Create Config Map
+kubectl create configmap mongo-cloud-manager-config \
+  --from-literal="baseUrl=https://cloud.mongodb.com/v2#/org/5f71414cb909195063a1f252" \
+  --from-literal="projectName=resource-scheduler" \
+  --from-literal="orgId=resource-scheduler"
