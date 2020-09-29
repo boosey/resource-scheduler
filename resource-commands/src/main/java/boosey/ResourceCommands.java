@@ -1,23 +1,54 @@
 package boosey;
 
+import javax.inject.Inject;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoCollection;
+
+import org.bson.Document;
 import org.jboss.logging.Logger;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
+import lombok.val;
 
 public class ResourceCommands {
     private static final Logger log = Logger.getLogger(ResourceCommands.class);
 
-    @Funq
-    @CloudEventMapping(trigger = "addResource", responseSource = "handleAddResource", responseType = "addedResource")
-    public String handleAddResource(AddResourceEventData evtData, @Context CloudEvent evtCtx) {
+    @Inject MongoClient mongoClient;
+    
+    Document buildNewEventRecordFrom(String eventType, CloudEvent evtCtx) {
 
-        ResourceCommandsEventRecord evtRec = ResourceCommandsEventRecord.buildWith(evtCtx, evtData);
-        evtRec.persist();
-
-        log.info("*** add resource *** separated evtData: " + evtData);
-        return evtData + "::" + "annotatedChain";
+        return new Document()
+            .append("type", eventType)
+            .append("source", evtCtx.source())
+            .append("specVersion", evtCtx.specVersion())
+            .append("subject", evtCtx.subject())
+            .append("time", evtCtx.time().toString());
     }
+
+    private MongoCollection<Document> getCollection() {
+        return mongoClient.getDatabase("resources").getCollection("events");
+    }
+
+    @Funq
+    @CloudEventMapping(trigger = "addResource", responseSource = "handleAddResource", responseType = "resourceAdded")
+    public ResourceAddedEventData handleAddResource(AddResourceEventData evtData, @Context CloudEvent evtCtx) {
+
+        val result = getCollection().insertOne(
+            this.buildNewEventRecordFrom("addResource", evtCtx)
+                    .append("eventData", evtData));
+
+        log.info("*** add resource *** separated evtRecord.id: " + result.getInsertedId() );
+
+        val retEvt = new ResourceAddedEventData();
+        retEvt.recordId = result.getInsertedId().toString();
+        retEvt.name = evtData.name;
+        retEvt.available = evtData.available;
+
+        return retEvt;
+    }
+
 
 }
