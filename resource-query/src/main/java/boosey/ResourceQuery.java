@@ -12,11 +12,9 @@ public class ResourceQuery {
     // private static final Logger log = Logger.getLogger(ResourceQuery.class);
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Resource> list() {
 
         return Resource.listAll();
     }
-
-
 }

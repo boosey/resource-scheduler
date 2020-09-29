@@ -24,9 +24,9 @@ public class ResourceQueryProcessor {
         log.info("resource in query processor: ");
 
         val r = new Resource(); 
-        r.eventRecordId = evtData.recordId.toString();
-        r.name = evtData.name;
-        r.available = evtData.available;
+        r.setId(evtData.getResourceId());
+        r.setName(evtData.getName());
+        r.setActive(evtData.getActive());
         r.persist();
 
         log.info(" after persist resource in query processor: ");

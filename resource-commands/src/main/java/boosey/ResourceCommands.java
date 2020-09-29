@@ -1,10 +1,9 @@
 package boosey;
 
 import javax.inject.Inject;
-
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-
+import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.jboss.logging.Logger;
 import io.quarkus.funqy.Context;
@@ -32,23 +31,42 @@ public class ResourceCommands {
         return mongoClient.getDatabase("resources").getCollection("events");
     }
 
+    private Boolean isValid(AddResourceEventData e) {
+        // check that there is no resource with the same name
+        // return Uni<Boolean>.createFrom(true);
+        return true;
+    }
+
     @Funq
     @CloudEventMapping(trigger = "addResource", responseSource = "handleAddResource", responseType = "resourceAdded")
     public ResourceAddedEventData handleAddResource(AddResourceEventData evtData, @Context CloudEvent evtCtx) {
 
-        val result = getCollection().insertOne(
-            this.buildNewEventRecordFrom("addResource", evtCtx)
-                    .append("eventData", evtData));
+        InsertOneResult result;
 
-        log.info("*** add resource *** separated evtRecord.id: " + result.getInsertedId() );
+        if (isValid(evtData)) {
+            // Save event record to Mongo
+            result = getCollection().insertOne(
+                this.buildNewEventRecordFrom("addResource", evtCtx)
+                        .append("_id", evtData.getEventId())
+                        .append("eventData", evtData));
+                        
+            log.info("*** add resource *** separated evtRecord.id: " + result.getInsertedId());
 
-        val retEvt = new ResourceAddedEventData();
-        retEvt.recordId = result.getInsertedId().toString();
-        retEvt.name = evtData.name;
-        retEvt.available = evtData.available;
+            // Prepare new event to inform a Resource has been added
+            val retEvt = new ResourceAddedEventData();
+            retEvt.setInitiatingEventId(evtData.getEventId());
+            retEvt.setResourceId(evtData.getResourceId());
+            retEvt.setName(evtData.getName());
+            retEvt.setActive(evtData.getActive());
 
-        return retEvt;
+            return retEvt;
+        }
+
+        return null;
     }
+         
+
+
 
 
 }
