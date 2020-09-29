@@ -33,4 +33,15 @@ public class ResourceQueryProcessor {
 
         return "Complete";
     }
+
+    @Funq
+    @CloudEventMapping(trigger = "allResourcesDeleted", responseSource = "handleAllResourcesDeleted", responseType = "resourceQueryable")
+    @Transactional
+    public String handleAllResourcesDeleted(AllResourcesDeletedEventData evtData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+
+        log.info("delete all in query processor: ");
+        Resource.deleteAll();
+        
+        return "Complete";
+    }
 }

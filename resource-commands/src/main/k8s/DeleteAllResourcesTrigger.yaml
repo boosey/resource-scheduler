@@ -1,11 +1,11 @@
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: resourceadded
+  name: deleteallresources
 spec:
   filter:
     attributes:
-      type: resourceAdded
+      type: deleteAllResources
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

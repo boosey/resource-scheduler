@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: resource-query-processor-v21
+      name: resource-query-processor-v22
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:
