@@ -1,16 +1,17 @@
 package boosey;
 
 import java.util.UUID;
-
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @NoArgsConstructor
-@Data
-public class AddResourceEventData {
+@Getter
+@Setter
+@ToString
+public class AddResourceEventData extends CommonEvent {
 
-    @Getter(lazy=true) private final String eventId = generateUUID();
     @Getter(lazy=true) private final String resourceId = generateUUID();
     private String name;
     private String active;

@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: resource-commands-server-v43
+      name: resource-commands-server-v45
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:
