@@ -71,11 +71,25 @@ public class ResourceCommands {
 
         getCollection().insertOne(
             this.buildNewEventRecordFrom("deleteAllResources", evtCtx)
-                .append("_id", evtData.getEventId())
-                .append("eventData", evtData));
+                .append("_id", evtData.getEventId()));
 
         val retEvt = new AllResourcesDeletedEventData();
         retEvt.setInitiatingEventId(evtData.getEventId());
+        return retEvt;
+    }
+
+    @Funq
+    @CloudEventMapping(trigger = "deleteResource", responseSource = "handleDeleteResource", responseType = "resourceDeleted")
+    public ResourceDeletedEventData handleDeleteResource(DeleteResourceEventData evtData, @Context CloudEvent evtCtx) {
+
+        getCollection().insertOne(
+            this.buildNewEventRecordFrom("deleteResource", evtCtx)
+                .append("_id", evtData.getEventId())
+                .append("eventData", evtData));
+
+        val retEvt = new ResourceDeletedEventData();
+        retEvt.setInitiatingEventId(evtData.getEventId());
+        retEvt.setId(evtData.getId());
         return retEvt;
     }
 
