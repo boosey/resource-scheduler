@@ -1,20 +1,25 @@
 package boosey;
 
 import java.util.List;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
+import javax.enterprise.context.ApplicationScoped;
 // import org.jboss.logging.Logger;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 
-@Path("/resources")
+@ApplicationScoped
 public class ResourceQuery {
     // private static final Logger log = Logger.getLogger(ResourceQuery.class);
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public List<Resource> list() {
+    public Uni<List<Resource>> listAll() {
+        return new UniCreateWithEmitter<List<Resource>>( emitter ->  
+            emitter.complete(Resource.listAll()));
+    }
 
-        return Resource.listAll();
+    public Uni<Boolean> existsByName(String name) {
+        return Resource.existsByName(name);
+    }
+
+    public Uni<Resource> findByName(String name) {
+        return Resource.findByName(name);
     }
 }

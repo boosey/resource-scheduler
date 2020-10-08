@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: addresource
+spec:
+  filter:
+    attributes:
+      type: ADD_RESOURCE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-command-event-processor
