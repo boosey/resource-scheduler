@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: resource-query-event-processor-v8
+      name: resource-query-event-processor-v10
       annotations:
         autoscaling.knative.dev/target: "5"
     spec:
