@@ -19,7 +19,16 @@ public class ResourceQuery {
         return Resource.existsByName(name);
     }
 
+    public long count() {
+        return Resource.count();
+    }
+
+    public Uni<Boolean> exists(String id) {
+        return Uni.createFrom().item(Resource.count("resourceId", id) > 0);
+    }
+
     public Uni<Resource> findByName(String name) {
         return Resource.findByName(name);
     }
+
 }

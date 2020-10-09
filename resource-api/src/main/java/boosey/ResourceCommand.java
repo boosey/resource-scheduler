@@ -43,11 +43,16 @@ public class ResourceCommand {
 
         log.info("ItemIdData: " + ItemIdData.builder().id(resourceId).build().getId());
 
-        new ResourceSchedulerEvent<ItemIdData>(
-            Type.DELETE_RESOURCE,
-            Source.RESOURCE_API,
-            ItemIdData.builder().id(resourceId).build())
-            .fire();
+        if (query.exists(resourceId)
+                    .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
+            new ResourceSchedulerEvent<ItemIdData>(
+                Type.DELETE_RESOURCE,
+                Source.RESOURCE_API,
+                ItemIdData.builder().id(resourceId).build())
+                .fire();                        
+        } else {        
+            throw new NotAcceptableException("Resource Does Not Exist");
+        }
 
         return true;
     }    

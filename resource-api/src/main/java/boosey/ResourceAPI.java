@@ -6,15 +6,18 @@ import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -79,6 +82,7 @@ public class ResourceAPI {
     public Uni<Response> addResource(Resource resource) {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
+            
             String resourceId = command.addResource(resource);
             emitter.complete(Response.accepted(resourceId).build());
         });        
@@ -89,27 +93,29 @@ public class ResourceAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> deleteAllResources() {
 
-        log.info("entering deleteAllReources API");
         return new UniCreateWithEmitter<Response>( emitter -> {
-            log.info("about to call command.deleteAllResources");
-
+            val cnt = query.count();
             command.deleteAllResources();
-            emitter.complete(Response.ok().build());
+            emitter.complete(Response.ok(cnt).build());
         });
     }
-    
+
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{resourceId}")
     public Uni<Response> deleteResource(@PathParam("resourceId") String resourceId) {
+        
+        log.info("command.deleteResource");
 
-        log.info("entering deleteReource API");
         return new UniCreateWithEmitter<Response>( emitter -> {
-            log.info("about to call command.deleteResource");
+            try {
+                command.deleteResource(resourceId);
+                emitter.complete(Response.ok("1").build());  
 
-            command.deleteResource(resourceId);
-            emitter.complete(Response.ok().build());
+            } catch (NotAcceptableException e) {
+                emitter.complete(Response.status(Status.NOT_FOUND).build());
+            }
         });
     }
 }
