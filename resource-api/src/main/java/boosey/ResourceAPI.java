@@ -8,6 +8,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -93,6 +94,21 @@ public class ResourceAPI {
             log.info("about to call command.deleteAllResources");
 
             command.deleteAllResources();
+            emitter.complete(Response.ok().build());
+        });
+    }
+    
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{resourceId}")
+    public Uni<Response> deleteResource(@PathParam("resourceId") String resourceId) {
+
+        log.info("entering deleteReource API");
+        return new UniCreateWithEmitter<Response>( emitter -> {
+            log.info("about to call command.deleteResource");
+
+            command.deleteResource(resourceId);
             emitter.complete(Response.ok().build());
         });
     }

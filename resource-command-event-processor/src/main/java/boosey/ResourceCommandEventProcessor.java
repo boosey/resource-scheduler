@@ -38,12 +38,13 @@ public class ResourceCommandEventProcessor {
 
     @Funq
     @CloudEventMapping(trigger = "DELETE_RESOURCE")
-    public void handleDeleteResource(Resource resource, @Context CloudEvent evtCtx) {
+    public void handleDeleteResource(ItemIdData resourceId, @Context CloudEvent evtCtx) {
 
-        new ResourceSchedulerEvent<Resource>(
+        log.info("in command.handleDeleteResource: " + resourceId);
+        new ResourceSchedulerEvent<ItemIdData>(
             Type.RESOURCE_DELETED,
             Source.HANDLE_DELETE_RESOURCE,
-            resource)
+            resourceId)
             .fire();
     }
 

@@ -94,7 +94,6 @@ public class ResourceSchedulerEvent<T> {
 
     public String fire() {
 
-        log.info("Event Service: " + ResourceSchedulerEvent.getEventService());
         ResourceSchedulerEvent.getEventService().fire(
             this.getEventId(), 
             this.getEventType().name(), 
@@ -105,8 +104,8 @@ public class ResourceSchedulerEvent<T> {
             gson.toJson(this.getEventData()));
             // this.toJson());  // MAYBE NEEDS TO BE ToJson()  
 
-        log.info("writing event data");
-        log.info("Mongo Service: " + ResourceSchedulerEvent.getMongoClient());
+        log.info("writing event data: " + gson.toJson(this.getEventData()));
+
         this.getCollection().insertOne(new Document()
             .append("type", this.getEventType().name())
             .append("source", this.getSource().name())

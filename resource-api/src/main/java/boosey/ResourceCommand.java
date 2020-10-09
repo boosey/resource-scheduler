@@ -5,10 +5,10 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.NotAcceptableException;
 
-// @Slf4j
+@Slf4j
 @ApplicationScoped
 public class ResourceCommand {
     @Inject ResourceQuery query;
@@ -34,6 +34,19 @@ public class ResourceCommand {
             Type.DELETE_ALL_RESOURCES,
             Source.RESOURCE_API,
             new NoEventData())
+            .fire();
+
+        return true;
+    }    
+
+    public Boolean deleteResource(String resourceId) {
+
+        log.info("ItemIdData: " + ItemIdData.builder().id(resourceId).build().getId());
+
+        new ResourceSchedulerEvent<ItemIdData>(
+            Type.DELETE_RESOURCE,
+            Source.RESOURCE_API,
+            ItemIdData.builder().id(resourceId).build())
             .fire();
 
         return true;

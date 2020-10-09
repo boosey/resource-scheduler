@@ -11,9 +11,10 @@ import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
 import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 public class ResourceQueryEventProcessor {
-    // private static final Logger log = Logger.getLogger(ResourceQueryEventProcessor.class);
 
     @Funq
     @CloudEventMapping(trigger = "RESOURCE_ADDED")
@@ -39,9 +40,10 @@ public class ResourceQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "RESOURCE_DELETED")
     @Transactional
-    public void handleResourceDeleted(Resource resource, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleResourceDeleted(ItemIdData resourceId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        Resource.deleteById(resource.getResourceId());
+        log.info("query processor: " + resourceId);
+        Resource.deleteById(resourceId.getId());
         
     }
 
