@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: resourcereplaced
+spec:
+  filter:
+    attributes:
+      type: RESOURCE_REPLACED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-query-event-processor

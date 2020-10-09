@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: ownerdeleted
+spec:
+  filter:
+    attributes:
+      type: RESOURCE_DELETED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: owner-query-event-processor

@@ -23,10 +23,12 @@ public class ResourceSchedulerEvent<T> {
 
     public enum Type {
         ADD_RESOURCE,
-        DELETE_ALL_RESOURCES,
-        DELETE_RESOURCE,
         RESOURCE_ADDED,
+        REPLACE_RESOURCE,
+        RESOURCE_REPLACED,
+        DELETE_ALL_RESOURCES,
         ALL_RESOURCES_DELETED,
+        DELETE_RESOURCE,
         RESOURCE_DELETED,
         RESOURCE_COMMAND_COMPLETE
     }
@@ -34,6 +36,7 @@ public class ResourceSchedulerEvent<T> {
     public enum Source {
         RESOURCE_API,
         HANDLE_ADD_RESOURCE,
+        HANDLE_REPLACE_RESOURCE,
         HANDLE_DELETE_ALL_RESOURCES,
         HANDLE_DELETE_RESOURCE
     }
