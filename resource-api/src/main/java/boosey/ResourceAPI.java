@@ -82,7 +82,6 @@ public class ResourceAPI {
     public Uni<Response> addResource(Resource resource) {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
-            
             String resourceId = command.addResource(resource);
             emitter.complete(Response.accepted(resourceId).build());
         });        

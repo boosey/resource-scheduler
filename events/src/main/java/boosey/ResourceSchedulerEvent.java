@@ -12,10 +12,13 @@ import org.bson.Document;
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Builder
+@Getter
+@ToString
 public class ResourceSchedulerEvent<T> {
 
     public enum Type {
@@ -40,12 +43,12 @@ public class ResourceSchedulerEvent<T> {
     private static EventService eventService;
     private static MongoClient mongoClient;
 
-    @Getter private final String eventId = generateUUID();
-    @Getter private final Type eventType;    
-    @Getter private final Source source;
-    @Getter private final String specVersion = "1.0";
-    @Getter private final String subject;
-    @Getter private final T eventData;
+    private final String eventId = generateUUID();
+    private final Type eventType;    
+    private final Source source;
+    private final String specVersion = "1.0";
+    private final String subject;
+    private final T eventData;
 
     private static EventService getEventService() {
         if (ResourceSchedulerEvent.eventService == null) {
