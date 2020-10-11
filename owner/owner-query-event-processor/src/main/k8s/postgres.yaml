@@ -4,13 +4,13 @@ metadata:
   annotations:
     template.alpha.openshift.io/wait-for-ready: 'true'
   selfLink: >-
-    /apis/apps.openshift.io/v1/namespaces/owner-scheduler/deploymentconfigs/postgresql
+    /apis/apps.openshift.io/v1/namespaces/resource-scheduler/deploymentconfigs/postgresql
   ownerVersion: '4915919'
   name: postgresql
   uid: 02b2a401-2f36-4801-81e5-94a6f6a4884d
   creationTimestamp: '2020-09-28T19:54:47Z'
   generation: 3
-  namespace: owner-scheduler
+  namespace: resource-scheduler
   labels:
     template: postgresql-persistent-template
     template.openshift.io/template-instance-owner: 92836bee-2b5b-4f6b-9924-01b0c06832dc

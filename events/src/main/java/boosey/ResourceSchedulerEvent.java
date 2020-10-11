@@ -30,7 +30,16 @@ public class ResourceSchedulerEvent<T> {
         ALL_RESOURCES_DELETED,
         DELETE_RESOURCE,
         RESOURCE_DELETED,
-        RESOURCE_COMMAND_COMPLETE
+        RESOURCE_COMMAND_COMPLETE,
+        ADD_OWNER,
+        OWNER_ADDED,
+        REPLACE_OWNER,
+        OWNER_REPLACED,
+        DELETE_ALL_OWNERS,
+        ALL_OWNERS_DELETED,
+        DELETE_OWNER,
+        OWNER_DELETED,
+        OWNER_COMMAND_COMPLETE      
     }
 
     public enum Source {
@@ -38,14 +47,18 @@ public class ResourceSchedulerEvent<T> {
         HANDLE_ADD_RESOURCE,
         HANDLE_REPLACE_RESOURCE,
         HANDLE_DELETE_ALL_RESOURCES,
-        HANDLE_DELETE_RESOURCE
+        HANDLE_DELETE_RESOURCE,
+        OWNER_API,
+        HANDLE_ADD_OWNER,
+        HANDLE_REPLACE_OWNER,
+        HANDLE_DELETE_ALL_OWNERS,
+        HANDLE_DELETE_OWNER   
     }
 
     private static Gson gson = new Gson();
-    
     private static EventService eventService;
     private static MongoClient mongoClient;
-
+    
     private final String eventId = generateUUID();
     private final Type eventType;    
     private final Source source;

@@ -2,11 +2,11 @@ apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
   name: owner-query-event-processor
-  namespace: owner-scheduler
+  namespace: resource-scheduler
 spec:
   template:
     metadata:
-      name: owner-query-event-processor-v18
+      name: owner-query-event-processor-v10
       annotations:
         autoscaling.knative.dev/target: "5"
     spec:

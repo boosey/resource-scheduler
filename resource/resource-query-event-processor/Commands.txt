@@ -15,10 +15,10 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
 && docker push docker.io/boosey/resource-query-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-query-event-processor/src/main/k8s/ResourceQueryEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-query-processor/src/main/k8s/AddResourceTrigger.yaml
+kubectl apply -n resource-scheduler -f src/main/k8s/AddResourceTrigger.yaml
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addresource -o jsonpath='{.status.subscriberUri}'
@@ -47,7 +47,7 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
 && docker push docker.io/boosey/resource-query-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-query-event-processor/src/main/k8s/ResourceQueryEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
 
 
 # Create mongodb from mongo supplied operator

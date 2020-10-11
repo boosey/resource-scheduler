@@ -3,8 +3,8 @@
 # Create Knative Serving in knative-serving namespace
 # Create Knative Eventing in knative-eventing namespace
 
-# Create broker in owner-scheduler namespace
-kubectl label namespace owner-scheduler knative-eventing-injection=enabled
+# Create broker in resource-scheduler namespace
+kubectl label namespace resource-scheduler knative-eventing-injection=enabled
 
 # Check for Broker and Pods
 watch kubectl --namespace knativetutorial get broker
@@ -15,12 +15,12 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/owner-command-event-processor . \
 && docker push docker.io/boosey/owner-command-event-processor \
-&& kubectl apply -n owner-scheduler -f /Users/boosey/Projects/owner-scheduler/owner-command-event-processor/src/main/k8s/ResourceCommandEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f src/main/k8s/OwnerCommandEventProcessor.yaml
 
 # Create Trigger
-kubectl apply -n owner-scheduler -f /Users/boosey/Projects/owner-scheduler/owner-commands/src/main/k8s/AddResourceTrigger.yaml
+kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/owner-commands/src/main/k8s/AddOwnerTrigger.yaml
 # Verify triggers
-kubectl --namespace owner-scheduler  get triggers.eventing.knative.dev
+kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addowner -o jsonpath='{.status.subscriberUri}'
 
 # Run
@@ -29,36 +29,36 @@ stern funq user-container
 # Get Broker URL
 kubectl get broker default -o jsonpath='{.status.address.url}'
 # Start curler pod
-kubectl -n owner-scheduler exec -it curler -- /bin/bash
+kubectl -n resource-scheduler exec -it curler -- /bin/bash
 
 # Test
-curl -v "http://default-broker.owner-scheduler.svc.cluster.local" \
+curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 -X POST \
 -H "Ce-Id: 1234" \
 -H "Ce-Specversion: 1.0" \
--H "Ce-Type: addResource" \
+-H "Ce-Type: addOwner" \
 -H "Ce-Source: curl" \
 -H "Content-Type: application/json" \
 -d '{"name" : "Space 204", "available" : "true"}'
 
 
 # Update Service
-# IMPORTANT: ResourceCommandService.yaml -> update spec:template:metadata:namespace
+# IMPORTANT: OwnerCommandService.yaml -> update spec:template:metadata:namespace
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/owner-command-event-processor . \
 && docker push docker.io/boosey/owner-command-event-processor \
-&& kubectl apply -n owner-scheduler -f /Users/boosey/Projects/owner-scheduler/owner-command-event-processor/src/main/k8s/ResourceCommandEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/owner-command-event-processor/src/main/k8s/OwnerCommandEventProcessor.yaml
 
 
 # Create mongodb from mongo supplied operator
 # Create API Key secret
-kubectl -n owner-scheduler \
-  create secret generic owner-scheduler-mongo-cloud-manager-api-key \
+kubectl -n resource-scheduler \
+  create secret generic resource-scheduler-mongo-cloud-manager-api-key \
   --from-literal="user=56fa4b37-f68b-4662-8004-b6db9371dff7" \
   --from-literal="publicApiKey=56fa4b37-f68b-4662-8004-b6db9371dff7"
 
 # Create Config Map
 kubectl create configmap mongo-cloud-manager-config \
   --from-literal="baseUrl=https://cloud.mongodb.com/v2#/org/5f71414cb909195063a1f252" \
-  --from-literal="projectName=owner-scheduler" \
-  --from-literal="orgId=owner-scheduler"
+  --from-literal="projectName=resource-scheduler" \
+  --from-literal="orgId=resource-scheduler"

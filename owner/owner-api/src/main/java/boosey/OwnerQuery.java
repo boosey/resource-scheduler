@@ -2,6 +2,7 @@ package boosey;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import boosey.datatype.owner.Owner;
 // import org.jboss.logging.Logger;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;

@@ -1,11 +1,11 @@
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: ownerreplaced
+  name: ownerdeleted
 spec:
   filter:
     attributes:
-      type: RESOURCE_REPLACED
+      type: OWNER_DELETED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

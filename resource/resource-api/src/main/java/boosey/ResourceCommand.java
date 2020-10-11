@@ -5,6 +5,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
+import boosey.datatype.resource.Resource;
+
 // import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.NotAcceptableException;
 
@@ -29,7 +31,7 @@ public class ResourceCommand {
                 .fire();                 
         }
 
-        return resource.getResourceId();
+        return resource.getId();
     }    
 
 
@@ -39,7 +41,7 @@ public class ResourceCommand {
                     .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
     
             // Just in case
-            resource.setResourceId(resourceId);
+            resource.setId(resourceId);
 
             ResourceSchedulerEvent.builder()
                 .eventType(Type.REPLACE_RESOURCE)

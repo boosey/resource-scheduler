@@ -1,21 +1,13 @@
 kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
 metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftWebConsole
-  selfLink: >-
-    /apis/apps.openshift.io/v1/namespaces/owner-scheduler/deploymentconfigs/owner-api
-  ownerVersion: '11550923'
   name: owner-api
-  uid: d2f72261-ed83-447e-b6e3-7abc3b5a5034
-  creationTimestamp: '2020-10-08T16:45:03Z'
-  generation: 2
-  namespace: owner-scheduler
+  namespace: resource-scheduler
   labels:
     app: owner-api
     app.kubernetes.io/component: owner-api
     app.kubernetes.io/instance: owner-api
-    app.openshift.io/runtime-namespace: owner-scheduler
+    app.openshift.io/runtime-namespace: resource-scheduler
 spec:
   strategy:
     type: Rolling
@@ -25,7 +17,6 @@ spec:
       timeoutSeconds: 600
       maxUnavailable: 25%
       maxSurge: 25%
-    owners: {}
     activeDeadlineSeconds: 21600
   triggers:
     - type: ImageChange
@@ -35,10 +26,8 @@ spec:
           - owner-api
         from:
           kind: ImageStreamTag
-          namespace: owner-scheduler
+          namespace: resource-scheduler
           name: 'owner-api:latest'
-        lastTriggeredImage: >-
-          docker.io/boosey/owner-api@sha256:a6b974005fb1f89829c096b840a4a94e9807adb8867fefb308086f136d8394fc
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
@@ -51,8 +40,6 @@ spec:
       labels:
         app: owner-api
         deploymentconfig: owner-api
-      annotations:
-        openshift.io/generated-by: OpenShiftWebConsole
     spec:
       containers:
         - name: owner-api
@@ -61,7 +48,6 @@ spec:
           ports:
             - containerPort: 8080
               protocol: TCP
-          owners: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
           imagePullPolicy: Always

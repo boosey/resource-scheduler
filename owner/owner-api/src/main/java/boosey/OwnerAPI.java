@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import boosey.datatype.owner.Owner;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 import lombok.val;
@@ -41,23 +42,19 @@ public class OwnerAPI {
     public Boolean createtestdata() {
 
         Owner r = new Owner();
-        r.setName("Space 402");
-        r.setActive("true");
+        r.setName("John");
         r.persist();
 
         r = new Owner();
-        r.setName("Space 401");
-        r.setActive("true");
+        r.setName("Kelly");
         r.persist();
 
         r = new Owner();
-        r.setName("Space 403");
-        r.setActive("true");
+        r.setName("Emily");
         r.persist();
 
         r = new Owner();
-        r.setName("Space 404");
-        r.setActive("true");
+        r.setName("Zach");
         r.persist();
 
         return true;

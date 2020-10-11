@@ -1,9 +1,8 @@
-package boosey;
+package boosey.datatype.owner;
 
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import org.hibernate.annotations.NamedQuery;
 import javax.ws.rs.NotFoundException;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
@@ -22,14 +21,14 @@ import lombok.val;
 @Getter
 @Setter
 @Entity
-@NamedQuery(name = "resourceFindByName", query = "from Resource where name = :name")
-public class Resource extends PanacheEntityBase {
-    @Id public String resourceId = UUID.randomUUID().toString();
+public class Owner extends PanacheEntityBase {
+    @Id public String id = UUID.randomUUID().toString();
     public String name;
-    public String active;
+    public String phone;
+    public String email;
 
-    private static PanacheQuery<Resource> findByNameQuery(String name) {
-        return Resource.find("LOWER(name) = ?1", name.toLowerCase());
+    private static PanacheQuery<Owner> findByNameQuery(String name) {
+        return Owner.find("LOWER(name) = ?1", name.toLowerCase());
     }
 
     public static Uni<Boolean> existsByName(String name){
@@ -38,12 +37,12 @@ public class Resource extends PanacheEntityBase {
         });        
     }
 
-    public static Uni<Resource> findByName(String name){
-        return new UniCreateWithEmitter<Resource>(emitter -> {
+    public static Uni<Owner> findByName(String name){
+        return new UniCreateWithEmitter<Owner>(emitter -> {
 
-            val resourceQuery = findByNameQuery(name);
-            if (resourceQuery.count() > 0 ) {
-                emitter.complete(resourceQuery.firstResult());
+            val OwnerQuery = findByNameQuery(name);
+            if (OwnerQuery.count() > 0 ) {
+                emitter.complete(OwnerQuery.firstResult());
             } else {
                 emitter.fail(new NotFoundException());
             }            

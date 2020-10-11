@@ -6,62 +6,54 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
+import boosey.datatype.owner.Owner;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
 import lombok.val;
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
-public class ResourceQueryEventProcessor {
+// @Slf4j
+public class OwnerQueryEventProcessor {
 
     @Funq
-    @CloudEventMapping(trigger = "RESOURCE_ADDED")
+    @CloudEventMapping(trigger = "OWNER_ADDED")
     @Transactional
-    public void handleResourceAdded(Resource owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerAdded(Owner owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        val r = new Resource(); 
-        r.setResourceId(owner.getResourceId());
+        val r = new Owner(); 
+        r.setId(owner.getId());
         r.setName(owner.getName());
-        r.setActive(owner.getActive());
+        r.setEmail(owner.getEmail());
+        r.setPhone(owner.getPhone());
         r.persist();
     }
 
     @Funq
-    @CloudEventMapping(trigger = "RESOURCE_REPLACED")
+    @CloudEventMapping(trigger = "OWNER_REPLACED")
     @Transactional
-    public void handleResourceReplaced(Resource owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerReplaced(Owner owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        if (!owner.isPersistent()) {
-            log.info("Not Persistent on UPDATE: " + owner);
-            Resource r = Resource.findById(owner.getResourceId());
-            r.setName(owner.getName());
-            r.setActive(owner.getActive());
-        } else {
-            // If already persistent, then the end of 
-            // transaction updates the DB automatically
-        }
+        Owner r = Owner.findById(owner.getId());
+        r.setName(owner.getName());
+        r.setEmail(owner.getEmail());
+        r.setPhone(owner.getPhone());
     }
 
     @Funq
-    @CloudEventMapping(trigger = "ALL_RESOURCES_DELETED")
+    @CloudEventMapping(trigger = "ALL_OWNERS_DELETED")
     @Transactional
-    public void handleAllResourcesDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleAllOwnersDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        Resource.deleteAll();
-
+        Owner.deleteAll();
     }
 
     @Funq
-    @CloudEventMapping(trigger = "RESOURCE_DELETED")
+    @CloudEventMapping(trigger = "OWNER_DELETED")
     @Transactional
-    public void handleResourceDeleted(ItemIdData ownerId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerDeleted(ItemIdData ownerId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        log.info("query processor: " + ownerId);
-        Resource.deleteById(ownerId.getId());
-        
+        Owner.deleteById(ownerId.getId()); 
     }
-
-
 }

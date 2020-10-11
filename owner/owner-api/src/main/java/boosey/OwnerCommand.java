@@ -3,8 +3,10 @@ package boosey;
 import java.time.Duration;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import boosey.OwnerSchedulerEvent.Source;
-import boosey.OwnerSchedulerEvent.Type;
+import boosey.ResourceSchedulerEvent.Source;
+import boosey.ResourceSchedulerEvent.Type;
+import boosey.datatype.owner.Owner;
+
 // import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.NotAcceptableException;
 
@@ -21,15 +23,15 @@ public class OwnerCommand {
             throw new NotAcceptableException("Owner Exists");
 
         } else {
-            OwnerSchedulerEvent.builder()
-                .eventType(Type.ADD_RESOURCE)
-                .source(Source.RESOURCE_API)
+            ResourceSchedulerEvent.builder()
+                .eventType(Type.ADD_OWNER)
+                .source(Source.OWNER_API)
                 .eventData(owner)
                 .build()
                 .fire();                 
         }
 
-        return owner.getOwnerId();
+        return owner.getId();
     }    
 
 
@@ -39,11 +41,11 @@ public class OwnerCommand {
                     .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
     
             // Just in case
-            owner.setOwnerId(ownerId);
+            owner.setId(ownerId);
 
-            OwnerSchedulerEvent.builder()
-                .eventType(Type.REPLACE_RESOURCE)
-                .source(Source.RESOURCE_API)
+            ResourceSchedulerEvent.builder()
+                .eventType(Type.REPLACE_OWNER)
+                .source(Source.OWNER_API)
                 .eventData(owner)
                 .build()
                 .fire();    
@@ -57,9 +59,9 @@ public class OwnerCommand {
 
     public Boolean deleteAllOwners() {
 
-        OwnerSchedulerEvent.builder()
-            .eventType(Type.DELETE_ALL_RESOURCES)
-            .source(Source.RESOURCE_API)
+        ResourceSchedulerEvent.builder()
+            .eventType(Type.DELETE_ALL_OWNERS)
+            .source(Source.OWNER_API)
             .eventData(new NoEventData())
             .build()
             .fire();
@@ -72,9 +74,9 @@ public class OwnerCommand {
         if (query.exists(ownerId)
                     .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
     
-            OwnerSchedulerEvent.builder()
-                .eventType(Type.DELETE_RESOURCE)
-                .source(Source.RESOURCE_API)
+            ResourceSchedulerEvent.builder()
+                .eventType(Type.DELETE_OWNER)
+                .source(Source.OWNER_API)
                 .eventData(ItemIdData.builder().id(ownerId).build())
                 .build()
                 .fire();    

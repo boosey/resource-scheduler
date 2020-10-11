@@ -15,7 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-event-processor . \
 && docker push docker.io/boosey/resource-command-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-command-event-processor/src/main/k8s/ResourceCommandEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceCommandEventProcessor.yaml
 
 # Create Trigger
 kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-commands/src/main/k8s/AddResourceTrigger.yaml
@@ -47,7 +47,7 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-event-processor . \
 && docker push docker.io/boosey/resource-command-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/resource-command-event-processor/src/main/k8s/ResourceCommandEventProcessor.yaml
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceCommandEventProcessor.yaml
 
 
 # Create mongodb from mongo supplied operator

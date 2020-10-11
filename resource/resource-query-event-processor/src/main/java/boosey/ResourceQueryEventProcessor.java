@@ -6,6 +6,7 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
+import boosey.datatype.resource.Resource;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
@@ -22,7 +23,7 @@ public class ResourceQueryEventProcessor {
     public void handleResourceAdded(Resource resource, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
         val r = new Resource(); 
-        r.setResourceId(resource.getResourceId());
+        r.setId(resource.getId());
         r.setName(resource.getName());
         r.setActive(resource.getActive());
         r.persist();
@@ -35,7 +36,7 @@ public class ResourceQueryEventProcessor {
 
         if (!resource.isPersistent()) {
             log.info("Not Persistent on UPDATE: " + resource);
-            Resource r = Resource.findById(resource.getResourceId());
+            Resource r = Resource.findById(resource.getId());
             r.setName(resource.getName());
             r.setActive(resource.getActive());
         } else {

@@ -41,7 +41,7 @@
     </dependency>
     <dependency>
       <groupId>boosey</groupId>
-      <artifactId>datatypes</artifactId>
+      <artifactId>owner</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>

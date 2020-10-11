@@ -5,7 +5,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: REPLACE_RESOURCE
+      type: REPLACE_OWNER
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
