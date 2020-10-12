@@ -1,0 +1,55 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: allavailabilitysdeleted
+spec:
+  filter:
+    attributes:
+      type: ALL_OWNERS_DELETED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: availabilityadded
+spec:
+  filter:
+    attributes:
+      type: OWNER_ADDED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: availabilitydeleted
+spec:
+  filter:
+    attributes:
+      type: OWNER_DELETED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: availabilityreplaced
+spec:
+  filter:
+    attributes:
+      type: OWNER_REPLACED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-query-event-processor
