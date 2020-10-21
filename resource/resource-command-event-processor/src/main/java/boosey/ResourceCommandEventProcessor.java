@@ -2,7 +2,6 @@ package boosey;
 
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
-import boosey.datatype.resource.Resource;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;

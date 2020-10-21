@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: requestUse-command-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: requestUse-command-event-processor-v4
+      annotations:
+        autoscaling.knative.dev/target: "1"
+    spec:
+      containers:
+        - image: docker.io/boosey/requestUse-command-event-processor

@@ -5,7 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
-import boosey.datatype.availability.Availability;
+import boosey.availability.Availability;
 import io.smallrye.mutiny.Uni;
 
 // import lombok.extern.slf4j.Slf4j;
@@ -59,7 +59,7 @@ public class AvailabilityCommand {
         return true;
     }   
 
-    public Boolean deleteAllAvailabilitys() {
+    public Boolean deleteAllAvailability() {
 
         ResourceSchedulerEvent.builder()
             .eventType(Type.DELETE_ALL_OWNERS)

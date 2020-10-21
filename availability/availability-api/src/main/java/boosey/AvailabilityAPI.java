@@ -1,6 +1,10 @@
 package boosey;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
+import java.util.UUID;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -15,14 +19,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import boosey.datatype.availability.Availability;
+
+import boosey.availability.Availability;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
-import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Path("/availabilitys")
+@Path("/availability")
+@ApplicationScoped
 public class AvailabilityAPI {
 
     @Inject AvailabilityQuery query;
@@ -34,17 +39,35 @@ public class AvailabilityAPI {
         return query.listAll();
     }
 
-    @GET
-    @Transactional
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/createtestdata")
-    public Boolean createtestdata() {
+    // @GET
+    // @Transactional
+    // @Produces(MediaType.TEXT_PLAIN)
+    // @Path("/createtestdata")
+    // public Boolean createtestdata() {
 
-        //  TODO
-        // Availability r = new Availability();
+    //     Availability r = new Availability();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 6, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 18, 00);
+    //     r.persist();
 
-        return true;
-    }
+    //     r = new Availability();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 10, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 18, 00);
+    //     r.persist();
+
+    //     r = new Availability();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 8, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 20, 00);
+    //     r.persist();
+
+    // return true;
+    // }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -82,17 +105,17 @@ public class AvailabilityAPI {
         });
     }
 
-    @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Uni<Response> deleteAllAvailabilitys() {
+    // @DELETE
+    // @Consumes(MediaType.APPLICATION_JSON)
+    // @Produces(MediaType.APPLICATION_JSON)
+    // public Uni<Response> deleteAllAvailability() {
 
-        return new UniCreateWithEmitter<Response>( emitter -> {
-            val cnt = query.count();
-            command.deleteAllAvailabilitys();
-            emitter.complete(Response.ok(cnt).build());
-        });
-    }
+    //     return new UniCreateWithEmitter<Response>( emitter -> {
+    //         val cnt = query.count();
+    //         command.deleteAllAvailability();
+    //         emitter.complete(Response.ok(cnt).build());
+    //     });
+    // }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)

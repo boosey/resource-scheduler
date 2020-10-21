@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: replaceowner
+spec:
+  filter:
+    attributes:
+      type: REPLACE_OWNER
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: owner-command-event-processor

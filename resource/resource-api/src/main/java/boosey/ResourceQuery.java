@@ -2,8 +2,6 @@ package boosey;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
-
-import boosey.datatype.resource.Resource;
 // import org.jboss.logging.Logger;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;

@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: owner-query-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: owner-query-event-processor-v11
+      annotations:
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: docker.io/boosey/owner-query-event-processor

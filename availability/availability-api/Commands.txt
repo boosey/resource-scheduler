@@ -9,4 +9,4 @@ kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-api . \
 && docker push docker.io/boosey/availability-api \
-&& oc rollout latest deploymentconfig/availability-api  
+&& oc rollout -n resource-scheduler latest deploymentconfig/availability-api  

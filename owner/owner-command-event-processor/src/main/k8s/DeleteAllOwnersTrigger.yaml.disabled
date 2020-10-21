@@ -1,0 +1,13 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleteallowners
+spec:
+  filter:
+    attributes:
+      type: DELETE_ALL_OWNERS
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: owner-command-event-processor
