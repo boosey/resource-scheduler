@@ -1,0 +1,29 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: acceptuse-api    
+  namespace: resource-scheduler
+  labels:
+    app: owner-api
+    app.kubernetes.io/component: acceptuse-api
+    app.kubernetes.io/instance: acceptuse-api
+    app.kubernetes.io/part-of: AcceptUse
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: acceptuse-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: acceptuse-api
+    spec:
+      containers:
+        - name: acceptuse-api
+          image: docker.io/boosey/acceptuse-api
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always

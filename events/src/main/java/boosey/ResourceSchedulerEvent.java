@@ -60,7 +60,17 @@ public class ResourceSchedulerEvent<T> {
         ALL_REQUEST_USES_DELETED,
         DELETE_REQUEST_USE,
         REQUEST_USE_DELETED,
-        REQUEST_USE_COMMAND_COMPLETE,                    
+        REQUEST_USE_COMMAND_COMPLETE,    
+
+        ADD_ACCEPT_USE,
+        ACCEPT_USE_ADDED,
+        REPLACE_ACCEPT_USE,
+        ACCEPT_USE_REPLACED,
+        DELETE_ALL_ACCEPT_USES,
+        ALL_ACCEPT_USES_DELETED,
+        DELETE_ACCEPT_USE,
+        ACCEPT_USE_DELETED,
+        ACCEPT_USE_COMMAND_COMPLETE,                          
     }
 
     public enum Source {
@@ -86,7 +96,14 @@ public class ResourceSchedulerEvent<T> {
         HANDLE_ADD_REQUEST_USE,
         HANDLE_REPLACE_REQUEST_USE,
         HANDLE_DELETE_ALL_REQUEST_USES,
-        HANDLE_DELETE_REQUEST_USE              
+        HANDLE_DELETE_REQUEST_USE,
+        
+        ACCEPT_USE_API,
+        HANDLE_ADD_ACCEPT_USE,
+        HANDLE_REPLACE_ACCEPT_USE,
+        HANDLE_DELETE_ALL_ACCEPT_USES,
+        HANDLE_DELETE_ACCEPT_USE,
+                
     }
 
     private static Gson gson = new Gson();

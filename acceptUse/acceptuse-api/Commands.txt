@@ -1,0 +1,12 @@
+
+# Build for OCP and deploy 
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
+
+# Create deployment config
+kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/acceptUse/acceptuse-api/src/main/k8s/AcceptUseAPI.yaml
+
+# Build locally and deploy
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/acceptuse-api . \
+&& docker push docker.io/boosey/acceptuse-api \
+&& oc rollout -n resource-scheduler latest deploymentconfig/acceptuse-api  
