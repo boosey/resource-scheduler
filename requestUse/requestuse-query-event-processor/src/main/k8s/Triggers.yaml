@@ -1,55 +1,55 @@
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: allrequestUsesdeleted
+  name: allrequestusesdeleted
 spec:
   filter:
     attributes:
-      type: ALL_OWNERS_DELETED
+      type: ALL_REQUEST_USES_DELETED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: requestUse-query-event-processor
+      name: requestuse-query-event-processor
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: requestUseadded
+  name: requestuseadded
 spec:
   filter:
     attributes:
-      type: OWNER_ADDED
+      type: REQUEST_USE_ADDED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: requestUse-query-event-processor
+      name: requestuse-query-event-processor
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: requestUsedeleted
+  name: requestusedeleted
 spec:
   filter:
     attributes:
-      type: OWNER_DELETED
+      type: REQUEST_USE_DELETED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: requestUse-query-event-processor
+      name: requestuse-query-event-processor
 ---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: requestUsereplaced
+  name: requestusereplaced
 spec:
   filter:
     attributes:
-      type: OWNER_REPLACED
+      type: REQUEST_USE_REPLACED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: requestUse-query-event-processor
+      name: requestuse-query-event-processor

@@ -13,8 +13,8 @@ watch kubectl get pods
 # Build Project, Docker Image, and Push to Docker Hub
 # then create the knative service
 mvn clean install \
-&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/requestUse-command-event-processor . \
-&& docker push docker.io/boosey/requestUse-command-event-processor \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/requestuse-command-event-processor . \
+&& docker push docker.io/boosey/requestuse-command-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/RequestUseCommandEventProcessor.yaml
 
 # Create Trigger

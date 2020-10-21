@@ -6,6 +6,8 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
+
+import boosey.requestuse.RequestUse;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
@@ -17,7 +19,7 @@ import lombok.val;
 public class RequestUseQueryEventProcessor {
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_ADDED")
+    @CloudEventMapping(trigger = "REQUEST_USE_ADDED")
     @Transactional
     public void handleRequestUseAdded(RequestUse requestUse, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -29,7 +31,7 @@ public class RequestUseQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_REPLACED")
+    @CloudEventMapping(trigger = "REQUEST_USE_REPLACED")
     @Transactional
     public void handleRequestUseReplaced(RequestUse requestUse, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -39,7 +41,7 @@ public class RequestUseQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "ALL_OWNERS_DELETED")
+    @CloudEventMapping(trigger = "ALL_REQUEST_USES_DELETED")
     @Transactional
     public void handleAllRequestUsesDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -47,7 +49,7 @@ public class RequestUseQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_DELETED")
+    @CloudEventMapping(trigger = "REQUEST_USE_DELETED")
     @Transactional
     public void handleRequestUseDeleted(ItemIdData requestUseId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 

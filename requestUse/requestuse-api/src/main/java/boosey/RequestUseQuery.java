@@ -2,6 +2,8 @@ package boosey;
 
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+
+import boosey.requestuse.RequestUse;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 

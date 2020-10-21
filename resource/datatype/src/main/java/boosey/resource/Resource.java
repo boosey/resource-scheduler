@@ -1,4 +1,4 @@
-package boosey;
+package boosey.resource;
 
 import java.util.UUID;
 import javax.persistence.Entity;

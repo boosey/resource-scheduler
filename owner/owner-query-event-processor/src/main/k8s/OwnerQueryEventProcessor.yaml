@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: owner-query-event-processor-v11
+      name: owner-query-event-processor-v12
       annotations:
         autoscaling.knative.dev/target: "5"
     spec:

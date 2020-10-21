@@ -1,12 +1,8 @@
 package boosey;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
-import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -19,10 +15,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-
 import boosey.availability.Availability;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
+import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -105,17 +101,17 @@ public class AvailabilityAPI {
         });
     }
 
-    // @DELETE
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Uni<Response> deleteAllAvailability() {
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Response> deleteAllAvailability() {
 
-    //     return new UniCreateWithEmitter<Response>( emitter -> {
-    //         val cnt = query.count();
-    //         command.deleteAllAvailability();
-    //         emitter.complete(Response.ok(cnt).build());
-    //     });
-    // }
+        return new UniCreateWithEmitter<Response>( emitter -> {
+            val cnt = query.count();
+            command.deleteAllAvailability();
+            emitter.complete(Response.ok(cnt).build());
+        });
+    }
 
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)

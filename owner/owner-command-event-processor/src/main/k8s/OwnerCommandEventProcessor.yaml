@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: owner-command-event-processor-v5
+      name: owner-command-event-processor-v6
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:

@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
+import boosey.requestuse.RequestUse;
 import io.smallrye.mutiny.Uni;
 
 // import lombok.extern.slf4j.Slf4j;

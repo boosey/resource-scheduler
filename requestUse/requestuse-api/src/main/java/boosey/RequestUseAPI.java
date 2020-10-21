@@ -1,13 +1,8 @@
 package boosey;
 
-import java.time.LocalDateTime;
-import java.time.Month;
 import java.util.List;
-import java.util.UUID;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -20,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import boosey.requestuse.RequestUse;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,35 +34,35 @@ public class RequestUseAPI {
         return query.listAll();
     }
 
-    @GET
-    @Transactional
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/createtestdata")
-    public Boolean createtestdata() {
+    // @GET
+    // @Transactional
+    // @Produces(MediaType.TEXT_PLAIN)
+    // @Path("/createtestdata")
+    // public Boolean createtestdata() {
 
-        RequestUse r = new RequestUse();
-        r.resourceId = UUID.randomUUID().toString();
-        r.resourceActive = true;
-        r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 6, 00);
-        r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 18, 00);
-        r.persist();
+    //     RequestUse r = new RequestUse();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 6, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 18, 00);
+    //     r.persist();
 
-        r = new RequestUse();
-        r.resourceId = UUID.randomUUID().toString();
-        r.resourceActive = true;
-        r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 10, 00);
-        r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 18, 00);
-        r.persist();
+    //     r = new RequestUse();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 10, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 18, 00);
+    //     r.persist();
 
-        r = new RequestUse();
-        r.resourceId = UUID.randomUUID().toString();
-        r.resourceActive = true;
-        r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 8, 00);
-        r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 20, 00);
-        r.persist();
+    //     r = new RequestUse();
+    //     r.resourceId = UUID.randomUUID().toString();
+    //     r.resourceActive = true;
+    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 8, 00);
+    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 20, 00);
+    //     r.persist();
 
-    return true;
-    }
+    // return true;
+    // }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

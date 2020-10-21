@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: availability-query-event-processor-v12
+      name: availability-query-event-processor-v14
       annotations:
         autoscaling.knative.dev/target: "5"
     spec:

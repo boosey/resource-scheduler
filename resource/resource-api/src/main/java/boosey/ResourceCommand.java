@@ -5,6 +5,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
+import boosey.resource.Resource;
 
 // import lombok.extern.slf4j.Slf4j;
 import javax.ws.rs.NotAcceptableException;
