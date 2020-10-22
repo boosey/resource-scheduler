@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: reservation-query-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: reservation-query-event-processor-v2
+      annotations:
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: docker.io/boosey/reservation-query-event-processor

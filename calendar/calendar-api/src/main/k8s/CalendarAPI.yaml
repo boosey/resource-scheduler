@@ -1,0 +1,29 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: calendar-api    
+  namespace: resource-scheduler
+  labels:
+    app: calendar-api
+    app.kubernetes.io/component: calendar-api
+    app.kubernetes.io/instance: calendar-api
+    app.kubernetes.io/part-of: Calendar
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: calendar-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: calendar-api
+    spec:
+      containers:
+        - name: calendar-api
+          image: docker.io/boosey/calendar-api
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always

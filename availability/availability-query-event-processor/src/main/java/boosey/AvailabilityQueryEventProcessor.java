@@ -19,7 +19,7 @@ import lombok.val;
 public class AvailabilityQueryEventProcessor {
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_ADDED")
+    @CloudEventMapping(trigger = "AVAILABILITY_ADDED")
     @Transactional
     public void handleAvailabilityAdded(Availability availability, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -31,7 +31,7 @@ public class AvailabilityQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_REPLACED")
+    @CloudEventMapping(trigger = "AVAILABILITY_REPLACED")
     @Transactional
     public void handleAvailabilityReplaced(Availability availability, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -41,7 +41,7 @@ public class AvailabilityQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "ALL_OWNERS_DELETED")
+    @CloudEventMapping(trigger = "ALL_AVAILABILITYS_DELETED")
     @Transactional
     public void handleAllAvailabilitysDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
@@ -49,7 +49,7 @@ public class AvailabilityQueryEventProcessor {
     }
 
     @Funq
-    @CloudEventMapping(trigger = "OWNER_DELETED")
+    @CloudEventMapping(trigger = "AVAILABILITY_DELETED")
     @Transactional
     public void handleAvailabilityDeleted(ItemIdData availabilityId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 

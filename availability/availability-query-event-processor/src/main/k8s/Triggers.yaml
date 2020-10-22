@@ -5,7 +5,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: ALL_OWNERS_DELETED
+      type: ALL_AVAILABILITYS_DELETED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
@@ -19,7 +19,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: OWNER_ADDED
+      type: AVAILABILITY_ADDED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
@@ -33,7 +33,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: OWNER_DELETED
+      type: AVAILABILITY_DELETED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
@@ -47,7 +47,7 @@ metadata:
 spec:
   filter:
     attributes:
-      type: OWNER_REPLACED
+      type: AVAILABILITY_REPLACED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

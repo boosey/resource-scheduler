@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: calendar-query-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: calendar-query-event-processor-v15
+      annotations:
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: docker.io/boosey/calendar-query-event-processor

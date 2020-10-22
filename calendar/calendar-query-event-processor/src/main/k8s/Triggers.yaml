@@ -1,0 +1,55 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: allcalendarsdeleted
+spec:
+  filter:
+    attributes:
+      type: ALL_CALENDARS_DELETED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: calendar-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: calendaradded
+spec:
+  filter:
+    attributes:
+      type: CALENDAR_ADDED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: calendar-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: calendardeleted
+spec:
+  filter:
+    attributes:
+      type: CALENDAR_DELETED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: calendar-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: calendarreplaced
+spec:
+  filter:
+    attributes:
+      type: CALENDAR_REPLACED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: calendar-query-event-processor

@@ -1,0 +1,12 @@
+
+# Build for OCP and deploy 
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
+
+# Create deployment config
+kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/reservation/reservation-api/src/main/k8s/ReservationAPI.yaml
+
+# Build locally and deploy
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/reservation-api . \
+&& docker push docker.io/boosey/reservation-api \
+&& oc rollout -n resource-scheduler latest deploymentconfig/reservation-api  

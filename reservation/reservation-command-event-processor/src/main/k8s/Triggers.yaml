@@ -1,0 +1,56 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: addreservation
+spec:
+  filter:
+    attributes:
+      type: ADD_RESERVATION
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: reservation-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleteallreservations
+spec:
+  filter:
+    attributes:
+      type: DELETE_ALL_RESERVATIONS
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: reservation-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deletereservation
+spec:
+  filter:
+    attributes:
+      type: DELETE_RESERVATION
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: reservation-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: replacereservation
+spec:
+  filter:
+    attributes:
+      type: REPLACE_RESERVATION
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: reservation-command-event-processor
+      

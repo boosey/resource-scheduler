@@ -26,8 +26,8 @@ public class AvailabilityCommand {
 
         } else {
             ResourceSchedulerEvent.builder()
-                .eventType(Type.ADD_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.ADD_AVAILABILITY)
+                .source(Source.AVAILABILITY_API)
                 .eventData(availability)
                 .build()
                 .fire();                 
@@ -46,8 +46,8 @@ public class AvailabilityCommand {
             availability.setId(availabilityId);
 
             ResourceSchedulerEvent.builder()
-                .eventType(Type.REPLACE_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.REPLACE_AVAILABILITY)
+                .source(Source.AVAILABILITY_API)
                 .eventData(availability)
                 .build()
                 .fire();    
@@ -62,8 +62,8 @@ public class AvailabilityCommand {
     public Boolean deleteAllAvailability() {
 
         ResourceSchedulerEvent.builder()
-            .eventType(Type.DELETE_ALL_OWNERS)
-            .source(Source.OWNER_API)
+            .eventType(Type.DELETE_ALL_AVAILABILITYS)
+            .source(Source.AVAILABILITY_API)
             .eventData(new NoEventData())
             .build()
             .fire();
@@ -77,8 +77,8 @@ public class AvailabilityCommand {
                     .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
     
             ResourceSchedulerEvent.builder()
-                .eventType(Type.DELETE_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.DELETE_AVAILABILITY)
+                .source(Source.AVAILABILITY_API)
                 .eventData(ItemIdData.builder().id(availabilityId).build())
                 .build()
                 .fire();    

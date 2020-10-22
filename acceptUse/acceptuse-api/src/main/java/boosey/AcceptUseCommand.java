@@ -26,8 +26,8 @@ public class AcceptUseCommand {
 
         } else {
             ResourceSchedulerEvent.builder()
-                .eventType(Type.ADD_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.ADD_ACCEPT_USE)
+                .source(Source.ACCEPT_USE_API)
                 .eventData(acceptUse)
                 .build()
                 .fire();                 
@@ -46,8 +46,8 @@ public class AcceptUseCommand {
             acceptUse.setId(acceptUseId);
 
             ResourceSchedulerEvent.builder()
-                .eventType(Type.REPLACE_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.REPLACE_ACCEPT_USE)
+                .source(Source.ACCEPT_USE_API)
                 .eventData(acceptUse)
                 .build()
                 .fire();    
@@ -62,8 +62,8 @@ public class AcceptUseCommand {
     public Boolean deleteAllAcceptUse() {
 
         ResourceSchedulerEvent.builder()
-            .eventType(Type.DELETE_ALL_OWNERS)
-            .source(Source.OWNER_API)
+            .eventType(Type.DELETE_ALL_ACCEPT_USES)
+            .source(Source.ACCEPT_USE_API)
             .eventData(new NoEventData())
             .build()
             .fire();
@@ -77,8 +77,8 @@ public class AcceptUseCommand {
                     .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
     
             ResourceSchedulerEvent.builder()
-                .eventType(Type.DELETE_OWNER)
-                .source(Source.OWNER_API)
+                .eventType(Type.DELETE_ACCEPT_USE)
+                .source(Source.ACCEPT_USE_API)
                 .eventData(ItemIdData.builder().id(acceptUseId).build())
                 .build()
                 .fire();    

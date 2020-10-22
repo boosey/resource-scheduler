@@ -1,0 +1,29 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: reservation-api    
+  namespace: resource-scheduler
+  labels:
+    app: Calendar
+    app.kubernetes.io/component: reservation-api
+    app.kubernetes.io/instance: reservation-api
+    app.kubernetes.io/part-of: Reservation
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: reservation-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: reservation-api
+    spec:
+      containers:
+        - name: reservation-api
+          image: docker.io/boosey/reservation-api
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always
