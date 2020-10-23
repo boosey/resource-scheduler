@@ -1,0 +1,29 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: requestuse-api    
+  namespace: resource-scheduler
+  labels:
+    app: owner-api
+    app.kubernetes.io/component: requestuse-api
+    app.kubernetes.io/instance: requestuse-api
+    app.kubernetes.io/part-of: RequestUse
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: requestuse-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: requestuse-api
+    spec:
+      containers:
+        - name: requestuse-api
+          image: docker.io/boosey/requestuse-api
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always

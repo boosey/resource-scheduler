@@ -17,31 +17,39 @@ public class OwnerCommand {
 
     public String addOwner(Owner owner) {
 
-        if (query.existsByName(owner.getName())
-                .await().atMost(Duration.ofMillis(5000))) {
+        if (existsByName(owner)) {
 
-            throw new NotAcceptableException("Owner Exists");
-
-        } else {
             ResourceSchedulerEvent.builder()
                 .eventType(Type.ADD_OWNER)
                 .source(Source.OWNER_API)
                 .eventData(owner)
                 .build()
-                .fire();                 
+                .fire();             
+        } else {
+            throw new NotAcceptableException("Owner Exists");             
         }
 
         return owner.getId();
     }    
 
+    private Boolean existsByName(Owner o) {
+        return !query.existsByName(o.getName())
+                .await().atMost(Duration.ofMillis(5000));
+    }
+
+    private Boolean exists(String ownerId) {
+        return query.exists(ownerId)
+                    .await().atMost(Duration.ofMillis(5000));
+    }
 
     public Boolean replaceOwner(String ownerId, Owner owner) {
 
-        if (query.exists(ownerId)
-                    .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
-    
-            // Just in case
-            owner.setId(ownerId);
+        if (exists(ownerId)) {
+            
+            if (!owner.id.equalsIgnoreCase(ownerId))
+             throw new RuntimeException("IDs aren't equal");
+
+            // owner.setId(ownerId);
 
             ResourceSchedulerEvent.builder()
                 .eventType(Type.REPLACE_OWNER)
@@ -71,8 +79,7 @@ public class OwnerCommand {
 
     public Boolean deleteOwner(String ownerId) {
 
-        if (query.exists(ownerId)
-                    .await().atMost(Duration.ofMillis(5000)).booleanValue()) {
+        if (exists(ownerId)) {
     
             ResourceSchedulerEvent.builder()
                 .eventType(Type.DELETE_OWNER)

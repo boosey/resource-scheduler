@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: resource-command-event-processor-v22
+      name: resource-command-event-processor-v1
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:

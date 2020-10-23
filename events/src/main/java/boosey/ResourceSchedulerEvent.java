@@ -31,6 +31,8 @@ public class ResourceSchedulerEvent<T> {
         DELETE_RESOURCE,
         RESOURCE_DELETED,
         RESOURCE_COMMAND_COMPLETE,
+        DEACTIVATE_RESOURCE,
+        RESOURCE_DEACTIVATED,
 
         ADD_OWNER,
         OWNER_ADDED,
@@ -51,6 +53,8 @@ public class ResourceSchedulerEvent<T> {
         DELETE_AVAILABILITY,
         AVAILABILITY_DELETED,
         AVAILABILITY_COMMAND_COMPLETE,
+        AVAILABILITY_ACTIVATED,
+        AVAILABILITY_DEACTIVATED,
 
         ADD_REQUEST_USE,
         REQUEST_USE_ADDED,
@@ -81,16 +85,7 @@ public class ResourceSchedulerEvent<T> {
         DELETE_RESERVATION,
         RESERVATION_DELETED,
         RESERVATION_COMMAND_COMPLETE,  
-
-        ADD_CALENDAR,
-        CALENDAR_ADDED,
-        REPLACE_CALENDAR,
-        CALENDAR_REPLACED,
-        DELETE_ALL_CALENDARS,
-        ALL_CALENDARS_DELETED,
-        DELETE_CALENDAR,
-        CALENDAR_DELETED,
-        CALENDAR_COMMAND_COMPLETE,         
+      
     }
 
     public enum Source {
@@ -99,6 +94,7 @@ public class ResourceSchedulerEvent<T> {
         HANDLE_REPLACE_RESOURCE,
         HANDLE_DELETE_ALL_RESOURCES,
         HANDLE_DELETE_RESOURCE,
+        HANDLE_RESOURCE_DEACTIVATED,
 
         OWNER_API,
         HANDLE_ADD_OWNER,
@@ -111,6 +107,8 @@ public class ResourceSchedulerEvent<T> {
         HANDLE_REPLACE_AVAILABILITY,
         HANDLE_DELETE_ALL_AVAILABILITIES,
         HANDLE_DELETE_AVAILABILITY,
+        HANDLE_AVAILABILITY_DEACTIVATED,
+        HANDLE_AVAILABILITY_ACTIVATED,
         
         REQUEST_USE_API,
         HANDLE_ADD_REQUEST_USE,
@@ -129,12 +127,8 @@ public class ResourceSchedulerEvent<T> {
         HANDLE_REPLACE_RESERVATION,
         HANDLE_DELETE_ALL_RESERVATIONS,
         HANDLE_DELETE_RESERVATION,
-     
-        CALENDAR_API,
-        HANDLE_ADD_CALENDAR,
-        HANDLE_REPLACE_CALENDAR,
-        HANDLE_DELETE_ALL_CALENDARS,
-        HANDLE_DELETE_CALENDAR,
+        HANDLE_RESERVATION_DEACTIVATED,
+        HANDLE_RESERVATION_ACTIVATED,
                                                 
     }
 

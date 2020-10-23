@@ -15,6 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-event-processor . \
 && docker push docker.io/boosey/resource-command-event-processor \
+&& kn service delete resource-command-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/ResourceCommandEventProcessor.yaml
 
 # Create Trigger

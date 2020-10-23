@@ -3,7 +3,7 @@
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
 
 # Create deployment config
-kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/owner-api/src/main/k8s/OwnerAPI.yaml
+kubectl create -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/owner/owner-api/src/main/k8s/OwnerAPI.yaml
 
 # Build locally and deploy
 mvn clean install \

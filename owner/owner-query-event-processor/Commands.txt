@@ -15,6 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/owner-query-event-processor . \
 && docker push docker.io/boosey/owner-query-event-processor \
+&& kn service delete owner-query-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/OwnerQueryEventProcessor.yaml
 
 # Create Trigger

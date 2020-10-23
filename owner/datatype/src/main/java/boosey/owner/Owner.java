@@ -4,8 +4,6 @@ import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.ws.rs.NotFoundException;
-
-import io.quarkus.hibernate.orm.PersistenceUnit;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.smallrye.mutiny.Uni;
@@ -28,6 +26,7 @@ public class Owner extends PanacheEntityBase {
     public String name;
     public String phone;
     public String email;
+    public Boolean active;
 
     private static PanacheQuery<Owner> findByNameQuery(String name) {
         return Owner.find("LOWER(name) = ?1", name.toLowerCase());

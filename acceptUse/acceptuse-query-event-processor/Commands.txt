@@ -15,6 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/acceptuse-query-event-processor . \
 && docker push docker.io/boosey/acceptuse-query-event-processor \
+&& kn service delete acceptuse-query-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/AcceptUseQueryEventProcessor.yaml
 
 # Create Trigger

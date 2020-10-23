@@ -26,8 +26,8 @@ public class Resource extends PanacheEntityBase {
     public String ownerId;
     public String name;
     public String description;
-    public String active;
-    public Boolean availableByDefault;
+    public Boolean active = false;
+    public Boolean availableByDefault = false;
 
     private static PanacheQuery<Resource> findByNameQuery(String name) {
         return Resource.find("LOWER(name) = ?1", name.toLowerCase());

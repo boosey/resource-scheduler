@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: availability-command-event-processor-v6
+      name: availability-command-event-processor-v1
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:

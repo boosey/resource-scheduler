@@ -15,6 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/calendar-query-event-processor . \
 && docker push docker.io/boosey/calendar-query-event-processor \
+&& kn service delete calendar-query-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/CalendarQueryEventProcessor.yaml
 
 # Create Trigger

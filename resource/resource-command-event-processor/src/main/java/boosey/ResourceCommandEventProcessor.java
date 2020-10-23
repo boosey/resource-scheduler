@@ -12,11 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ResourceCommandEventProcessor {
 
-    // private static final Logger log = Logger.getLogger(ResourceCommandEventProcessor.class);
-
     @Funq
     @CloudEventMapping(trigger = "ADD_RESOURCE")
     public void handleAddResource(Resource resource, @Context CloudEvent eventContext) {
+
+        log.info("c add: " + resource.toString());
 
         new ResourceSchedulerEvent<Resource>(
             Type.RESOURCE_ADDED,

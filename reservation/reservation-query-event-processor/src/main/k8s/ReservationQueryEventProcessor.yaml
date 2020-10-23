@@ -6,7 +6,7 @@ metadata:
 spec:
   template:
     metadata:
-      name: reservation-query-event-processor-v2
+      name: reservation-query-event-processor-v1
       annotations:
         autoscaling.knative.dev/target: "5"
     spec:

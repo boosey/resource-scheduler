@@ -18,7 +18,7 @@ import lombok.ToString;
 @Entity
 public class AcceptUse extends PanacheEntityBase {
     @Id public String id = UUID.randomUUID().toString();
-    public String acceptUseId;
+    public String acceptorId;
     public String requesterId;
     public String requestUseId;
     public String resourceId;

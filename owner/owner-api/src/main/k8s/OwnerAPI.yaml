@@ -30,7 +30,7 @@ spec:
           name: 'owner-api:latest'
     - type: ConfigChange
   replicas: 1
-  revisionHistoryLimit: 10
+  revisionHistoryLimit: 3
   test: false
   selector:
     app: owner-api
@@ -43,8 +43,7 @@ spec:
     spec:
       containers:
         - name: owner-api
-          image: >-
-            docker.io/boosey/owner-api@sha256:a6b974005fb1f89829c096b840a4a94e9807adb8867fefb308086f136d8394fc
+          image: docker.io/boosey/owner-api
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -52,7 +51,3 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      securityContext: {}
-      schedulerName: default-scheduler

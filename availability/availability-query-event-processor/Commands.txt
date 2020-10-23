@@ -15,6 +15,7 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-query-event-processor . \
 && docker push docker.io/boosey/availability-query-event-processor \
+&& kn service delete availability-query-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/AvailabilityQueryEventProcessor.yaml
 
 # Create Trigger

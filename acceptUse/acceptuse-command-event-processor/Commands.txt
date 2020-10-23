@@ -47,7 +47,8 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/acceptuse-command-event-processor . \
 && docker push docker.io/boosey/acceptuse-command-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/acceptUse/acceptuse-command-event-processor/src/main/k8s/AcceptUseCommandEventProcessor.yaml
+&& kn service delete acceptuse-command-event-processor \
+&& kubectl apply -n resource-scheduler -f src/main/k8s/AcceptUseCommandEventProcessor.yaml
 
 
 # Create mongodb from mongo supplied operator

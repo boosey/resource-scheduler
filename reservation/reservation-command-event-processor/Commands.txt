@@ -15,7 +15,8 @@ watch kubectl get pods
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/reservation-command-event-processor . \
 && docker push docker.io/boosey/reservation-command-event-processor \
-&& kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/reservation/reservation-command-event-processor/src/main/k8s/ReservationCommandEventProcessor.yaml
+&& kn service delete reservation-command-event-processor \
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ReservationCommandEventProcessor.yaml
 
 # Create Trigger
 kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/reservation-commands/src/main/k8s/AddReservationTrigger.yaml

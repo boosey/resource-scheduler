@@ -1,0 +1,56 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: addrequestuse
+spec:
+  filter:
+    attributes:
+      type: ADD_ACCEPT_USE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: requestuse-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleteallrequestuses
+spec:
+  filter:
+    attributes:
+      type: DELETE_ALL_ACCEPT_USES
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: requestuse-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleterequestuse
+spec:
+  filter:
+    attributes:
+      type: DELETE_ACCEPT_USE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: requestuse-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: replacerequestuse
+spec:
+  filter:
+    attributes:
+      type: REPLACE_ACCEPT_USE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: requestuse-command-event-processor
+      

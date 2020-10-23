@@ -1,0 +1,14 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: requestuse-query-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: requestuse-query-event-processor-v1
+      annotations:
+        autoscaling.knative.dev/target: "5"
+    spec:
+      containers:
+        - image: docker.io/boosey/requestuse-query-event-processor

@@ -62,7 +62,7 @@ public class ReservationCommand {
     public Boolean deleteAllReservation() {
 
         ResourceSchedulerEvent.builder()
-            .eventType(Type.DELETE_ALL_AVAILABILITYS)
+            .eventType(Type.DELETE_ALL_AVAILABILITIES)
             .source(Source.AVAILABILITY_API)
             .eventData(new NoEventData())
             .build()

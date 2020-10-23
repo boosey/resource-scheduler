@@ -47,6 +47,7 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
 && docker push docker.io/boosey/resource-query-event-processor \
+&& kn service delete resource-query-event-processor \
 && kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
 
 

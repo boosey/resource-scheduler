@@ -44,22 +44,22 @@ public class ResourceAPI {
 
         Resource r = new Resource();
         r.setName("Space 402");
-        r.setActive("true");
+        r.setActive(true);
         r.persist();
 
         r = new Resource();
         r.setName("Space 401");
-        r.setActive("true");
+        r.setActive(true);
         r.persist();
 
         r = new Resource();
         r.setName("Space 403");
-        r.setActive("true");
+        r.setActive(true);
         r.persist();
 
         r = new Resource();
         r.setName("Space 404");
-        r.setActive("true");
+        r.setActive(true);
         r.persist();
 
         return true;
@@ -83,6 +83,8 @@ public class ResourceAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> addResource(Resource resource) {
+
+        log.info("add: " + resource.toString());
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             try {

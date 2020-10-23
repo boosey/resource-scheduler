@@ -1,0 +1,55 @@
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: addresource
+spec:
+  filter:
+    attributes:
+      type: ADD_RESOURCE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-command-event-processor
+--- 
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleteallresources
+spec:
+  filter:
+    attributes:
+      type: DELETE_ALL_RESOURCES
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-command-event-processor
+--- 
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: deleteresource
+spec:
+  filter:
+    attributes:
+      type: DELETE_RESOURCE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-command-event-processor
+--- 
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  name: replaceresource
+spec:
+  filter:
+    attributes:
+      type: REPLACE_RESOURCE
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: resource-command-event-processor

@@ -3,13 +3,7 @@ apiVersion: apps.openshift.io/v1
 metadata:
   annotations:
     openshift.io/generated-by: OpenShiftWebConsole
-  selfLink: >-
-    /apis/apps.openshift.io/v1/namespaces/resource-scheduler/deploymentconfigs/resource-api
-  resourceVersion: '11550923'
   name: resource-api
-  uid: d2f72261-ed83-447e-b6e3-7abc3b5a5034
-  creationTimestamp: '2020-10-08T16:45:03Z'
-  generation: 2
   namespace: resource-scheduler
   labels:
     app: resource-api
@@ -37,8 +31,6 @@ spec:
           kind: ImageStreamTag
           namespace: resource-scheduler
           name: 'resource-api:latest'
-        lastTriggeredImage: >-
-          docker.io/boosey/resource-api@sha256:a6b974005fb1f89829c096b840a4a94e9807adb8867fefb308086f136d8394fc
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
@@ -51,13 +43,10 @@ spec:
       labels:
         app: resource-api
         deploymentconfig: resource-api
-      annotations:
-        openshift.io/generated-by: OpenShiftWebConsole
     spec:
       containers:
         - name: resource-api
-          image: >-
-            docker.io/boosey/resource-api@sha256:a6b974005fb1f89829c096b840a4a94e9807adb8867fefb308086f136d8394fc
+          image: docker.io/boosey/resource-api
           ports:
             - containerPort: 8080
               protocol: TCP
@@ -66,7 +55,3 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
       restartPolicy: Always
-      terminationGracePeriodSeconds: 30
-      dnsPolicy: ClusterFirst
-      securityContext: {}
-      schedulerName: default-scheduler

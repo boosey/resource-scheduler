@@ -6,7 +6,6 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
-
 import boosey.resource.Resource;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
@@ -23,10 +22,14 @@ public class ResourceQueryEventProcessor {
     @Transactional
     public void handleResourceAdded(Resource resource, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
+        log.info("q added: " + resource.toString());
+
         val r = new Resource(); 
         r.setId(resource.getId());
+        r.setOwnerId(resource.getOwnerId());
         r.setName(resource.getName());
         r.setActive(resource.getActive());
+        r.setAvailableByDefault(resource.getAvailableByDefault());
         r.persist();
     }
 

@@ -6,7 +6,6 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
-
 import boosey.owner.Owner;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
@@ -28,6 +27,7 @@ public class OwnerQueryEventProcessor {
         r.setName(owner.getName());
         r.setEmail(owner.getEmail());
         r.setPhone(owner.getPhone());
+        r.setActive(owner.getActive());
         r.persist();
     }
 
@@ -40,6 +40,7 @@ public class OwnerQueryEventProcessor {
         r.setName(owner.getName());
         r.setEmail(owner.getEmail());
         r.setPhone(owner.getPhone());
+        r.setActive(owner.getActive());
     }
 
     @Funq
