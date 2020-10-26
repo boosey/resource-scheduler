@@ -34,36 +34,6 @@ public class AvailabilityAPI {
     public Uni<List<Availability>> listAll() {
         return query.listAll();
     }
-
-    // @GET
-    // @Transactional
-    // @Produces(MediaType.TEXT_PLAIN)
-    // @Path("/createtestdata")
-    // public Boolean createtestdata() {
-
-    //     Availability r = new Availability();
-    //     r.resourceId = UUID.randomUUID().toString();
-    //     r.resourceActive = true;
-    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 6, 00);
-    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 18, 00);
-    //     r.persist();
-
-    //     r = new Availability();
-    //     r.resourceId = UUID.randomUUID().toString();
-    //     r.resourceActive = true;
-    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 10, 00);
-    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 21, 18, 00);
-    //     r.persist();
-
-    //     r = new Availability();
-    //     r.resourceId = UUID.randomUUID().toString();
-    //     r.resourceActive = true;
-    //     r.startTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 8, 00);
-    //     r.endTime = LocalDateTime.of(2020, Month.OCTOBER, 20, 20, 00);
-    //     r.persist();
-
-    // return true;
-    // }
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

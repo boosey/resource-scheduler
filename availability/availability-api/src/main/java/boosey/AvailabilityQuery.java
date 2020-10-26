@@ -22,4 +22,9 @@ public class AvailabilityQuery {
     public Uni<Boolean> exists(String id) {
         return Uni.createFrom().item(Availability.count("availabilityId", id) > 0);
     }
+
+    public Uni<List<Availability>> listResourceAvailability(String resourceId) {
+
+        return Availability.findByResourceId(resourceId);
+    }
 }

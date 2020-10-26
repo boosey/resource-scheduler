@@ -25,7 +25,9 @@ import lombok.val;
 public class Availability extends PanacheEntityBase {
     @Id public String id = UUID.randomUUID().toString();
     public String resourceId;
-    public Boolean resourceActive;
+    public String resourceName;
+    public String ownerName;
+    public Boolean resourceActive = true;
     public LocalDateTime startTime;
     public LocalDateTime endTime;
 

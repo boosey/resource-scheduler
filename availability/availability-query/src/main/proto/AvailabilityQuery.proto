@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "boosey";
+option java_outer_classname = "AvailabilityQueryProto";
+
+package availabilityquery;
+
+service AvailabilityQuery {
+    rpc listAll (ListAllRequest) returns (stream AvailabilityGRPC) {}
+    rpc count(CountRequest) returns (CountReply) {}
+    rpc exists(ExistsRequest) returns (ExistsReply) {}
+    rpc ListAvailabilityForResource(ListAvailabilityForResourceRequest) returns (stream AvailabilityGRPC) {}
+}
+
+message CountRequest {}
+message CountReply {
+    int64 count = 1;
+}
+
+message ListAllRequest {}
+
+message ListAvailabilityForResourceRequest {
+    string id = 1;
+}
+
+message ExistsRequest {
+    string id = 1;
+}
+
+message ExistsReply {
+    bool exists = 1;
+}
+
+message AvailabilityGRPC {
+    string id = 7;
+    string resource_id = 1;
+    string resource_name = 2;
+    string owner_name = 3;
+    bool resource_active = 4;
+    string start_time = 5;
+    string end_time = 6;
+}

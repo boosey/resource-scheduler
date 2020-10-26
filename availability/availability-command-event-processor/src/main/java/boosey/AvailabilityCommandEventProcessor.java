@@ -1,5 +1,7 @@
 package boosey;
 
+import javax.inject.Inject;
+
 import boosey.ResourceSchedulerEvent.Source;
 import boosey.ResourceSchedulerEvent.Type;
 import boosey.availability.Availability;
@@ -11,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class AvailabilityCommandEventProcessor {
+
+    @Inject AvailabilityCommand ac;
+    @Inject AvailabilityQuery aq;
 
     // private static final Logger log = Logger.getLogger(AvailabilityCommandEventProcessor.class);
 
@@ -37,7 +42,7 @@ public class AvailabilityCommandEventProcessor {
     }
          
     @Funq
-    @CloudEventMapping(trigger = "DELETE_ALL_AVAILABILITYS")
+    @CloudEventMapping(trigger = "DELETE_ALL_AVAILABILITIES")
     public void handleDeleteAllAvailabilitys(NoEventData eventData, @Context CloudEvent eventContext) {
 
         log.info("handling delete all event");
@@ -59,5 +64,32 @@ public class AvailabilityCommandEventProcessor {
             availabilityId)
             .fire();
     }
+
+    // HANDLE EXTERNAL EVENTS
+
+    @Funq
+    @CloudEventMapping(trigger = "RESOURCE_DELETED")
+    public void handleResourceDeleted(ItemIdData resourceId, @Context CloudEvent evtCtx) {
+
+        aq.listAvailabilityForResource(resourceId.getId())
+            .onItem().invoke(aList -> {
+                AvailabilityCommand ac = new AvailabilityCommand();
+                aList.forEach(a -> {
+                    ac.deleteAvailability(a.getId());
+                });
+            });
+    }    
+
+    @Funq
+    @CloudEventMapping(trigger = "ALL_RESOURCES_DELETED")
+    public void handleAllResourcesDeleted(String nil, @Context CloudEvent evtCtx) {
+
+        aq.listAll()
+            .onItem().invoke(aList -> {
+                aList.forEach(a -> {
+                    ac.deleteAvailability(a.getId());
+                });
+            });
+    }    
 
 }

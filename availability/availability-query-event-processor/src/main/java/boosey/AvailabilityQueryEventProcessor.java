@@ -8,6 +8,8 @@ import javax.transaction.SystemException;
 import javax.transaction.Transactional;
 
 import boosey.availability.Availability;
+// import boosey.owner.Owner;
+import boosey.resource.Resource;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
@@ -24,10 +26,23 @@ public class AvailabilityQueryEventProcessor {
     public void handleAvailabilityAdded(Availability availability, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
         // TODO
-        val r = new Availability(); 
-        r.setId(availability.getId());
+        val a = new Availability(); 
+        a.setId(availability.getId());
+        a.setResourceId(availability.getResourceId());
 
-        r.persist();
+        Resource r = Resource.findById(availability.getResourceId());
+        String rName = r.getName();
+        a.setResourceName(rName);
+
+        Owner o = Owner.findById(r.getOwnerId());
+        a.setOwnerName(o.getName());
+
+        a.setResourceActive(r.getActive());
+
+        a.setStartTime(availability.getStartTime());
+        a.setEndTime(availability.getEndTime());
+
+        a.persist();
     }
 
     @Funq
@@ -35,13 +50,25 @@ public class AvailabilityQueryEventProcessor {
     @Transactional
     public void handleAvailabilityReplaced(Availability availability, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
-        // TODO
-        // Availability r = Availability.findById(availability.getId());
+        Availability a = Availability.findById(availability.getId());
+        
+        a.setResourceId(availability.getResourceId());
 
+        Resource r = Resource.findById(availability.getResourceId());
+        String rName = r.getName();
+        a.setResourceName(rName);
+
+        Owner o = Owner.findById(r.getOwnerId());
+        a.setOwnerName(o.getName());
+
+        a.setResourceActive(r.getActive());
+
+        a.setStartTime(availability.getStartTime());
+        a.setEndTime(availability.getEndTime());
     }
 
     @Funq
-    @CloudEventMapping(trigger = "ALL_AVAILABILITYS_DELETED")
+    @CloudEventMapping(trigger = "ALL_AVAILABILITIES_DELETED")
     @Transactional
     public void handleAllAvailabilitysDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
