@@ -1,29 +1,29 @@
 apiVersion: apps.openshift.io/v1
 kind: DeploymentConfig
 metadata:
-  name: availability-api    
+  name: availability-query-rest    
   namespace: resource-scheduler
   labels:
     app: availablity-api
-    app.kubernetes.io/component: availability-api
-    app.kubernetes.io/instance: availability-api
+    app.kubernetes.io/component: availability-query-rest
+    app.kubernetes.io/instance: availability-query-rest
     app.kubernetes.io/part-of: Availability
     app.openshift.io/runtime-namespace: resource-scheduler  
 spec:
   triggers:
     - type: ConfigChange
   selector:
-    app: availability-api
+    app: availability-query-rest
   replicas: 1
-  revisionHistoryLimit: 0
+  revisionHistoryLimit: 0  
   template:
     metadata:
       labels:
-        app: availability-api
+        app: availability-query-rest
     spec:
       containers:
-        - name: availability-api
-          image: docker.io/boosey/availability-api
+        - name: availability-query-rest
+          image: docker.io/boosey/availability-query-rest
           ports:
             - containerPort: 8080
           imagePullPolicy: Always
@@ -32,12 +32,12 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  name: availability-api
+  name: availability-query-rest
   namespace: resource-scheduler
   labels:
-    app: availability-api
-    app.kubernetes.io/component: availability-api
-    app.kubernetes.io/instance: availability-api
+    app: availability-query-rest
+    app.kubernetes.io/component: availability-query-rest
+    app.kubernetes.io/instance: availability-query-rest
     app.kubernetes.io/name: ''
     app.kubernetes.io/part-of: Availability
     app.openshift.io/runtime: ''
@@ -51,6 +51,6 @@ spec:
       port: 8080
       targetPort: 8080
   selector:
-    app: availability-api
-    deploymentconfig: availability-api
+    app: availability-query-rest
+    deploymentconfig: availability-query-rest
 

@@ -3,10 +3,11 @@
 ./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
 
 # Create deployment config
-kubectl create -n resource-scheduler -f src/main/k8s/AvailabilityAPI.yaml
+kubectl create --save-config  -n resource-scheduler -f src/main/k8s/AvailabilityAPI.yaml
 
 # Build locally and deploy
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-api . \
 && docker push docker.io/boosey/availability-api \
 && oc rollout -n resource-scheduler latest deploymentconfig/availability-api  
+

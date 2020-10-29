@@ -1,12 +1,16 @@
 package boosey;
 
 import javax.inject.Singleton;
+import javax.transaction.Transactional;
+
 import boosey.availability.Availability;
 import io.smallrye.mutiny.Uni;
+import lombok.extern.slf4j.Slf4j;
 import io.smallrye.mutiny.Multi;
 
 @Singleton
-public class AvailabilityQuery extends MutinyAvailabilityQueryGrpc.AvailabilityQueryImplBase {
+@Slf4j
+public class AvailabilityQueryRemoveThis extends MutinyAvailabilityQueryGrpc.AvailabilityQueryImplBase {
 
     public Multi<AvailabilityGRPC> listAll() {
         return Multi.createFrom().emitter(emitter -> {
@@ -28,7 +32,11 @@ public class AvailabilityQuery extends MutinyAvailabilityQueryGrpc.AvailabilityQ
         }); 
     }
 
+    @Transactional
     public Uni<CountReply> count(CountRequest r) {
+        log.info("In Count method");
+        log.info("Availability count: " + Availability.count());
+
         return Uni.createFrom().item(
                 CountReply.newBuilder()
                 .setCount(Availability.count())

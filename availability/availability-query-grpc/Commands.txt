@@ -1,0 +1,10 @@
+# Create deployment config
+kubectl create -n resource-scheduler -f src/main/k8s/AvailabilityQuery.yaml
+
+# Build locally and deploy
+./mvnw clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-query-grpc . \
+&& docker push docker.io/boosey/availability-query-grpc \
+&& oc rollout -n resource-scheduler latest deploymentconfig/availability-query  
+
+curl --http2-prior-knowledge -d "" --output - -H "Content-Type: application/grpc" -H "TE: trailers" availability-query:9000

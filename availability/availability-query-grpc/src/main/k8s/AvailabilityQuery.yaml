@@ -1,0 +1,29 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: availability-query  
+  namespace: resource-scheduler
+  labels:
+    app: availability-query
+    app.kubernetes.io/component: availability-query
+    app.kubernetes.io/instance: availability-query
+    app.kubernetes.io/part-of: Availability
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: availability-query
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: availability-query
+    spec:
+      containers:
+        - name: availability-query
+          image: docker.io/boosey/availability-query-grpc
+          ports:
+            - containerPort: 9000
+          imagePullPolicy: Always
+      restartPolicy: Always
