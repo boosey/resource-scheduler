@@ -2,6 +2,7 @@ package boosey;
 
 import java.net.URI;
 import java.util.Date;
+import java.util.Map;
 import java.util.UUID;
 import javax.ws.rs.core.MediaType;
 import com.google.gson.Gson;
@@ -153,10 +154,31 @@ public class ResourceSchedulerEvent<T> {
         return ResourceSchedulerEvent.eventService;
     }
 
+    static Map<String, String> env = System.getenv();
+    static String mongoUser = env.get("mongouser");
+    static String mongoPwd = env.get("mongopwd");
+    static String mongoPwdAdmin = env.get("mongopwdadmin");
+    static String mongoHost = env.get("MONGO_EVENT_STORE_SERVICE_HOST");
+    static String mongoPort = env.get("MONGO_EVENT_STORE_SERVICE_PORT");;
+
     private static MongoClient getMongoClient() {
         if (ResourceSchedulerEvent.mongoClient == null) {
+            String connString =  new StringBuilder()
+                .append("mongodb://")
+                // .append(mongoUser)
+                // .append(":")
+                .append("admin:")
+                // .append(mongoPwd)
+                .append(mongoPwdAdmin)
+                .append("@")
+                .append(mongoHost)
+                .append(":")
+                .append(mongoPort)
+                .toString();
+
+            log.info(connString);
             ResourceSchedulerEvent.mongoClient =
-                MongoClients.create("mongodb://resource-commands-events-data.resource-scheduler.svc.cluster.local:27017");
+                MongoClients.create(connString);
         }
         return ResourceSchedulerEvent.mongoClient;
     }
@@ -185,7 +207,10 @@ public class ResourceSchedulerEvent<T> {
     }
 
     private MongoCollection<Document> getCollection() {
-        return ResourceSchedulerEvent.getMongoClient().getDatabase("resources").getCollection("events");
+        return ResourceSchedulerEvent
+            .getMongoClient()
+            .getDatabase("resource_scheduler")
+            .getCollection("events");
     }
 
     public String fire() {
@@ -198,7 +223,6 @@ public class ResourceSchedulerEvent<T> {
             this.getSubject(), 
             MediaType.APPLICATION_JSON, 
             gson.toJson(this.getEventData()));
-            // this.toJson());  // MAYBE NEEDS TO BE ToJson()  
 
         log.info("writing event data: " + gson.toJson(this.getEventData()));
 

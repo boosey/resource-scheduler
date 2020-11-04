@@ -1,0 +1,32 @@
+package boosey;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Map;
+import javax.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.rest.client.RestClientBuilder;
+import lombok.NoArgsConstructor;
+
+@NoArgsConstructor
+@ApplicationScoped
+public class EventService {
+    
+    EventServiceClient getRestClient() {
+        Map<String, String> env = System.getenv();
+        URL url = null;
+        try {
+			url = new URL(new StringBuilder()
+			        .append("http://")
+			        .append(env.get("EVENT_SERVICE_REST_SERVICE_HOST"))
+			        .append(":")
+			        .append(env.get("EVENT_SERVICE_REST_SERVICE_PORT"))
+			        .toString());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+
+        return RestClientBuilder.newBuilder()
+            .baseUrl(url)
+            .build(EventServiceClient.class);        
+	}
+}

@@ -1,0 +1,30 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: availability-command-event-processor
+  namespace: resource-scheduler
+spec:
+  template:
+    metadata:
+      name: availability-command-event-processor-v1
+      annotations:
+        autoscaling.knative.dev/target: "1"    
+    spec:
+      containers:
+        - image: docker.io/boosey/availability-command-event-processor:latest
+          env:
+            - name: mongouser
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-user
+            - name: mongopwd
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-password
+            - name: mongopwdadmin
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-admin-password

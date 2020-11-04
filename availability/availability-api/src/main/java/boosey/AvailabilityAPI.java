@@ -27,13 +27,14 @@ import lombok.extern.slf4j.Slf4j;
 @ApplicationScoped
 public class AvailabilityAPI {
 
-    @Inject @RestClient AvailabilityQueryAPI queryApi;
-    @Inject AvailabilityCommand command;
+    @Inject @RestClient AvailabilityQueryClient query;    
+    @Inject @RestClient AvailabilityCommandClient command;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> listAll() {
-        val r = queryApi.listAll();
+        // val r = clients.getAvailabilityQueryClient().listAll();        
+        val r = query.listAll();
         if (r.getStatusInfo() == Status.OK) {
             return Uni.createFrom().item(
                 Response
@@ -49,9 +50,8 @@ public class AvailabilityAPI {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)       
     public Uni<Availability> getAvailability(@PathParam("id") String id) {
-        log.info("getting: " + id);
         
-         val r = queryApi.getAvailability(id);
+         val r = query.getAvailability(id);
          if (r.getStatusInfo() == Status.NOT_FOUND) {
              throw new NotFoundException();
          } 
@@ -62,11 +62,20 @@ public class AvailabilityAPI {
     @Path("/count")
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> count() {
+
         return Uni.createFrom().item(
                 Response
-                    .ok(queryApi.count().getEntity())
+                    .ok(query.count().getEntity())
                     .build()
             );
+    }    
+
+    @GET
+    @Path("/exists/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Response> exists(@PathParam("id") String id) {
+
+        return Uni.createFrom().item(query.exists(id));
     }    
 
     @POST
@@ -76,8 +85,9 @@ public class AvailabilityAPI {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             try {
-                String id = command.addAvailability(availability);
-                emitter.complete(Response.accepted(id).build());
+                // String id = commandApi.addAvailability(availability);
+                command.addAvailability(availability);
+                emitter.complete(Response.accepted("fix this to return actual id").build());
             } catch (NotAcceptableException e) {
                 emitter.complete(Response.status(Status.NOT_FOUND).build());
             }            
@@ -91,7 +101,7 @@ public class AvailabilityAPI {
     public Uni<Response> replaceAvailability(@PathParam("id") String id, 
                                             Availability availability) {
         
-        log.info("command.replaceAvailability");
+        log.info("Api.replaceAvailability");
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             try {
@@ -110,9 +120,9 @@ public class AvailabilityAPI {
     public Uni<Response> deleteAllAvailability() {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
-            val cnt = queryApi.count();
+            val r = query.count();
             command.deleteAllAvailability();
-            emitter.complete(Response.ok(cnt).build());
+            emitter.complete(Response.ok(r.getEntity()).build());
         });
     }
 
@@ -122,7 +132,7 @@ public class AvailabilityAPI {
     @Path("/{id}")
     public Uni<Response> deleteAvailability(@PathParam("id") String id) {
         
-        log.info("command.deleteAvailability");
+        log.info("Api.deleteAvailability");
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             try {

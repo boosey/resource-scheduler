@@ -15,11 +15,11 @@ spec:
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: deleteallavailabilitys
+  name: deleteallavailabilities
 spec:
   filter:
     attributes:
-      type: DELETE_ALL_AVAILABILITYS
+      type: DELETE_ALL_AVAILABILITIES
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1

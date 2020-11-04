@@ -6,18 +6,15 @@ import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
-
 import boosey.availability.Availability;
-// import boosey.owner.Owner;
-import boosey.resource.Resource;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
 import lombok.val;
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 
-// @Slf4j
+@Slf4j
 public class AvailabilityQueryEventProcessor {
 
     @Funq
@@ -30,14 +27,14 @@ public class AvailabilityQueryEventProcessor {
         a.setId(availability.getId());
         a.setResourceId(availability.getResourceId());
 
-        Resource r = Resource.findById(availability.getResourceId());
-        String rName = r.getName();
-        a.setResourceName(rName);
+        // Resource r = Resource.findById(availability.getResourceId());
+        // String rName = r.getName();
+        // a.setResourceName(rName);
 
-        Owner o = Owner.findById(r.getOwnerId());
-        a.setOwnerName(o.getName());
+        // Owner o = Owner.findById(r.getOwnerId());
+        // a.setOwnerName(o.getName());
 
-        a.setResourceActive(r.getActive());
+        // a.setResourceActive(r.getActive());
 
         a.setStartTime(availability.getStartTime());
         a.setEndTime(availability.getEndTime());
@@ -52,16 +49,16 @@ public class AvailabilityQueryEventProcessor {
 
         Availability a = Availability.findById(availability.getId());
         
-        a.setResourceId(availability.getResourceId());
+        // a.setResourceId(availability.getResourceId());
 
-        Resource r = Resource.findById(availability.getResourceId());
-        String rName = r.getName();
-        a.setResourceName(rName);
+        // Resource r = Resource.findById(availability.getResourceId());
+        // String rName = r.getName();
+        // a.setResourceName(rName);
 
-        Owner o = Owner.findById(r.getOwnerId());
-        a.setOwnerName(o.getName());
+        // Owner o = Owner.findById(r.getOwnerId());
+        // a.setOwnerName(o.getName());
 
-        a.setResourceActive(r.getActive());
+        // a.setResourceActive(r.getActive());
 
         a.setStartTime(availability.getStartTime());
         a.setEndTime(availability.getEndTime());
@@ -72,7 +69,9 @@ public class AvailabilityQueryEventProcessor {
     @Transactional
     public void handleAllAvailabilitysDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
+        log.info("processing delete all");
         Availability.deleteAll();
+        log.info("after processing delete all");        
     }
 
     @Funq

@@ -1,0 +1,56 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: availability-command-rest  
+  namespace: resource-scheduler
+  labels:
+    app: availablity-api
+    app.kubernetes.io/component: availability-command-rest
+    app.kubernetes.io/instance: availability-command-rest
+    app.kubernetes.io/part-of: Availability
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: availability-command-rest
+  replicas: 1
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: availability-command-rest
+    spec:
+      containers:
+        - name: availability-command-rest
+          image: docker.io/boosey/availability-command-rest
+          ports:
+            - containerPort: 8080        
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: availability-command-rest
+  namespace: resource-scheduler
+  labels:
+    app: availability-command-rest
+    app.kubernetes.io/component: availability-command-rest
+    app.kubernetes.io/instance: availability-command-rest
+    app.kubernetes.io/name: ''
+    app.kubernetes.io/part-of: Availability
+    app.openshift.io/runtime: ''
+    app.openshift.io/runtime-version: latest
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: availability-command-rest
+    deploymentconfig: availability-command-rest
+

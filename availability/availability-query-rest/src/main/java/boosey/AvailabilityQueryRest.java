@@ -8,12 +8,13 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import boosey.availability.Availability;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
+// @Slf4j
 @Path("/availability-query")
 @ApplicationScoped
 public class AvailabilityQueryRest {
@@ -50,9 +51,12 @@ public class AvailabilityQueryRest {
 
     @GET
     @Path("/exists/{id}")
-    @Produces(MediaType.APPLICATION_JSON)       
-    public Uni<Boolean> exists(@PathParam("id") String id) {
-        return Uni.createFrom().item(Availability.count("availabilityId", id) > 0);
+    @Produces(MediaType.TEXT_PLAIN)       
+    public Uni<Response> exists(@PathParam("id") String id) {   
+        if (Availability.count("id", id) > 0)
+            return Uni.createFrom().item(Response.ok().build());
+        else
+            throw new NotFoundException();
     }
 
     @GET

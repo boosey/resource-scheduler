@@ -1,0 +1,72 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: event-service-rest  
+  namespace: resource-scheduler
+  labels:
+    app: availablity-api
+    app.kubernetes.io/component: event-service-rest
+    app.kubernetes.io/instance: event-service-rest
+    app.kubernetes.io/part-of: Events
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: event-service-rest
+  replicas: 1
+  revisionHistoryLimit: 0
+  template:
+    metadata:
+      labels:
+        app: event-service-rest
+    spec:
+      containers:
+        - name: event-service-rest
+          image: docker.io/boosey/event-service-rest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: mongouser
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-user
+            - name: mongopwd
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-password
+            - name: mongopwdadmin
+              valueFrom:
+                secretKeyRef:
+                  name: mongo-event-store
+                  key: database-admin-password          
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: event-service-rest
+  namespace: resource-scheduler
+  labels:
+    app: event-service-rest
+    app.kubernetes.io/component: event-service-rest
+    app.kubernetes.io/instance: event-service-rest
+    app.kubernetes.io/name: ''
+    app.kubernetes.io/part-of: Events
+    app.openshift.io/runtime: ''
+    app.openshift.io/runtime-version: latest
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: event-service-rest
+    deploymentconfig: event-service-rest
+

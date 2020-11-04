@@ -12,3 +12,4 @@ spec:
     spec:
       containers:
         - image: docker.io/boosey/availability-query-event-processor
+   

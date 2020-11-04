@@ -19,7 +19,7 @@ mvn clean install \
 && kubectl apply -n resource-scheduler -f src/main/k8s/AvailabilityQueryEventProcessor.yaml
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/availability-query-processor/src/main/k8s/AddAvailabilityTrigger.yaml
+kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addavailability -o jsonpath='{.status.subscriberUri}'

@@ -1,0 +1,13 @@
+
+# Build for OCP and deploy 
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true -Dquarkus.openshift.expose=true
+
+# Create deployment config
+kubectl create --save-config  -n resource-scheduler -f src/main/k8s/AvailabilityCommandRest.yaml
+
+# Build locally and deploy
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-command-rest . \
+&& docker push docker.io/boosey/availability-command-rest \
+&& oc rollout -n resource-scheduler latest deploymentconfig/availability-command-rest  
+

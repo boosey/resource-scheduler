@@ -1,0 +1,73 @@
+
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  annotations:
+    knative-eventing-injection: enabled
+  name: addavailability
+  namespace: resource-scheduler
+spec:
+  filter:
+    attributes:
+      type: ADD_AVAILABILITY
+  broker: default
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  annotations:
+    knative-eventing-injection: enabled
+  name: deleteallavailabilitys
+  namespace: resource-scheduler
+spec:
+  filter:
+    attributes:
+      type: DELETE_ALL_AVAILABILITYS
+  broker: default
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  annotations:
+    knative-eventing-injection: enabled
+  name: deleteavailability
+  namespace: resource-scheduler
+spec:
+  filter:
+    attributes:
+      type: DELETE_AVAILABILITY
+  broker: default
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-command-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  annotations:
+    knative-eventing-injection: enabled
+  name: replaceavailability
+  namespace: resource-scheduler
+spec:
+  filter:
+    attributes:
+      type: REPLACE_AVAILABILITY
+  broker: default
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-command-event-processor
+      

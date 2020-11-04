@@ -1,0 +1,11 @@
+# Build for OCP and deploy 
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
+
+# Create deployment config
+kubectl create --save-config  -n resource-scheduler -f src/main/k8s/EventService.yaml
+
+# Build locally and deploy
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/event-service-rest . \
+&& docker push docker.io/boosey/event-service-rest \
+&& oc rollout -n resource-scheduler latest deploymentconfig/event-service-rest  

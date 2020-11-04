@@ -1,0 +1,137 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "boosey";
+option java_outer_classname = "EventServiceProto";
+
+package eventservice;
+
+service EventService {
+    rpc fire (FireRequest) returns (FireReply) {}
+}
+
+// The request message containing the user's name.
+message FireRequest {
+
+    enum Type {
+        ADD_RESOURCE = 0;
+        RESOURCE_ADDED = 1;
+        REPLACE_RESOURCE = 2;
+        RESOURCE_REPLACED = 3;
+        DELETE_ALL_RESOURCES = 4;
+        ALL_RESOURCES_DELETED = 5;
+        DELETE_RESOURCE = 6;
+        RESOURCE_DELETED = 7;
+        RESOURCE_COMMAND_COMPLETE = 8;
+        DEACTIVATE_RESOURCE = 9;
+        RESOURCE_DEACTIVATED = 10;
+
+        ADD_OWNER = 11;
+        OWNER_ADDED = 12;
+        REPLACE_OWNER = 13;
+        OWNER_REPLACED = 14;
+        DELETE_ALL_OWNERS = 15;
+        ALL_OWNERS_DELETED = 16;
+        DELETE_OWNER = 17;
+        OWNER_DELETED = 18;
+        OWNER_COMMAND_COMPLETE = 19;
+
+        ADD_AVAILABILITY = 20;
+        AVAILABILITY_ADDED = 21;
+        REPLACE_AVAILABILITY = 22;
+        AVAILABILITY_REPLACED = 23;
+        DELETE_ALL_AVAILABILITIES = 24;
+        ALL_AVAILABILITIES_DELETED = 25;
+        DELETE_AVAILABILITY = 26;
+        AVAILABILITY_DELETED = 27;
+        AVAILABILITY_COMMAND_COMPLETE = 28;
+        AVAILABILITY_ACTIVATED = 29;
+        AVAILABILITY_DEACTIVATED = 30;
+
+        ADD_REQUEST_USE = 31;
+        REQUEST_USE_ADDED = 32;
+        REPLACE_REQUEST_USE = 33;
+        REQUEST_USE_REPLACED = 34;
+        DELETE_ALL_REQUEST_USES = 35;
+        ALL_REQUEST_USES_DELETED = 36;
+        DELETE_REQUEST_USE = 37;
+        REQUEST_USE_DELETED = 38;
+        REQUEST_USE_COMMAND_COMPLETE = 39;    
+
+        ADD_ACCEPT_USE = 40;
+        ACCEPT_USE_ADDED = 41;
+        REPLACE_ACCEPT_USE = 42;
+        ACCEPT_USE_REPLACED = 43;
+        DELETE_ALL_ACCEPT_USES = 44;
+        ALL_ACCEPT_USES_DELETED = 45;
+        DELETE_ACCEPT_USE = 46;
+        ACCEPT_USE_DELETED = 47;
+        ACCEPT_USE_COMMAND_COMPLETE = 48;                          
+
+        ADD_RESERVATION = 49;
+        RESERVATION_ADDED = 50;
+        REPLACE_RESERVATION = 51;
+        RESERVATION_REPLACED = 52;
+        DELETE_ALL_RESERVATIONS = 53;
+        ALL_RESERVATIONS_DELETED = 54;
+        DELETE_RESERVATION = 55;
+        RESERVATION_DELETED = 56;
+        RESERVATION_COMMAND_COMPLETE = 57;
+      
+    }    
+
+    enum Source {
+        RESOURCE_API = 0;
+        HANDLE_ADD_RESOURCE = 1;
+        HANDLE_REPLACE_RESOURCE = 2;
+        HANDLE_DELETE_ALL_RESOURCES = 3;
+        HANDLE_DELETE_RESOURCE = 4;
+        HANDLE_RESOURCE_DEACTIVATED = 5;
+
+        OWNER_API = 6;
+        HANDLE_ADD_OWNER = 7;
+        HANDLE_REPLACE_OWNER = 8;
+        HANDLE_DELETE_ALL_OWNERS = 9;
+        HANDLE_DELETE_OWNER = 10;
+
+        AVAILABILITY_API = 11;
+        HANDLE_ADD_AVAILABILITY = 12;
+        HANDLE_REPLACE_AVAILABILITY = 13;
+        HANDLE_DELETE_ALL_AVAILABILITIES = 14;
+        HANDLE_DELETE_AVAILABILITY = 15;
+        HANDLE_AVAILABILITY_DEACTIVATED = 16;
+        HANDLE_AVAILABILITY_ACTIVATED = 17;
+        
+        REQUEST_USE_API = 18;
+        HANDLE_ADD_REQUEST_USE = 19;
+        HANDLE_REPLACE_REQUEST_USE = 20;
+        HANDLE_DELETE_ALL_REQUEST_USES = 21;
+        HANDLE_DELETE_REQUEST_USE = 22;
+        
+        ACCEPT_USE_API = 23;
+        HANDLE_ADD_ACCEPT_USE = 24;
+        HANDLE_REPLACE_ACCEPT_USE = 25;
+        HANDLE_DELETE_ALL_ACCEPT_USES = 26;
+        HANDLE_DELETE_ACCEPT_USE = 27;
+     
+        RESERVATION_API = 28;
+        HANDLE_ADD_RESERVATION = 29;
+        HANDLE_REPLACE_RESERVATION = 30;
+        HANDLE_DELETE_ALL_RESERVATIONS = 31;
+        HANDLE_DELETE_RESERVATION = 32;
+        HANDLE_RESERVATION_DEACTIVATED = 33;
+        HANDLE_RESERVATION_ACTIVATED = 34;
+    }
+
+    string eventId = 1;
+    Type type = 2;
+    Source source = 3;
+    string specVersion = 4;
+    string subject = 5;
+    string eventData = 6;
+}
+
+// The response message containing the greetings
+message FireReply {
+    string eventId = 1;
+}
