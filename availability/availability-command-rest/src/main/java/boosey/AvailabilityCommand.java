@@ -50,7 +50,12 @@ public class AvailabilityCommand {
                         Source.AVAILABILITY_API,
                         availability);    
             log.info("after constructing event");
-            events.fire(e);
+            try {
+                events.fire(e);                
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
             log.info("after fire");
         }
 

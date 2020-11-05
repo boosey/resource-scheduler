@@ -8,7 +8,7 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.HeaderParam;
 
 @RegisterRestClient(configKey="knative-event-service")
-public interface KnativeEventService {
+public interface KnativeEventServiceBroker {
 
     @POST
     @Path("/")

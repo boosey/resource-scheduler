@@ -21,7 +21,7 @@ import javax.ws.rs.Path;
 public class EventService<T> {
 
     private static Gson gson = new Gson();
-    @Inject @RestClient KnativeEventService knativeEventService;
+    @Inject @RestClient KnativeEventServiceBroker knativeEventService;
     private static MongoClient mongoClient;
     
     static Map<String, String> env = System.getenv();
