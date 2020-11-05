@@ -84,13 +84,13 @@ public class AvailabilityAPI {
     public Uni<Response> addAvailability(Availability availability) {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
-            try {
-                // String id = commandApi.addAvailability(availability);
-                command.addAvailability(availability);
-                emitter.complete(Response.accepted("fix this to return actual id").build());
-            } catch (NotAcceptableException e) {
-                emitter.complete(Response.status(Status.NOT_FOUND).build());
-            }            
+
+            val r = command.addAvailability(availability);
+            if (r.getStatusInfo() == Status.OK)
+                emitter.complete(Response.accepted(r.readEntity(String.class)).build());
+            else
+                emitter.complete(Response.status(Status.CONFLICT).build());
+           
         });        
     }
 

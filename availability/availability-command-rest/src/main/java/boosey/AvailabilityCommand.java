@@ -32,7 +32,7 @@ public class AvailabilityCommand {
     @POST
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)
-    public String addAvailability(Availability availability) {
+    public Response addAvailability(Availability availability) {
 
         // TODO Need to check if the availability slot already exists
         // and check that the times don't overlap with an existing one
@@ -41,25 +41,23 @@ public class AvailabilityCommand {
         if (Uni.createFrom().item(false)
                 .await().atMost(Duration.ofMillis(5000))) {
 
-            throw new NotAcceptableException("Availability Exists");
+            return Response.status(Status.CONFLICT).build();
 
         } else {
-            log.info("in add availability");
+
             val e = new ResourceSchedulerEvent<Availability>(
                         Type.ADD_AVAILABILITY,
                         Source.AVAILABILITY_API,
                         availability);    
-            log.info("after constructing event");
+
             try {
                 events.fire(e);                
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-            log.info("after fire");
         }
 
-        return availability.getId();
+        return Response.ok(availability.getId()).build();
     }    
 
     @PUT
