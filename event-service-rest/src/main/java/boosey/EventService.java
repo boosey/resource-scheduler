@@ -18,7 +18,7 @@ import javax.ws.rs.Path;
 @Slf4j
 @ApplicationScoped
 @Path("/events")
-public class EventService<T> {
+public class EventService {
 
     private static Gson gson = new Gson();
     @Inject @RestClient KnativeEventServiceBroker knativeEventService;
@@ -67,7 +67,7 @@ public class EventService<T> {
 
     @POST
     @Path("/")
-    public String fire(ResourceSchedulerEvent<T> evt) {
+    public <T> String fire(ResourceSchedulerEvent<T> evt) {
 
         knativeEventService.fire(
             evt.getEventId(), 

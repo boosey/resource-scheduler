@@ -8,9 +8,9 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 @ApplicationScoped
 @Path("/events")
 @RegisterRestClient(configKey="event-service")
-public interface EventServiceClient<T> {
+public interface EventServiceClient {
     
     @POST
     @Path("/")
-    public String fire(ResourceSchedulerEvent<T> evt);    
+    public <T> String fire(ResourceSchedulerEvent<T> evt);    
 }

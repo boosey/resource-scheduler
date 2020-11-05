@@ -1,2 +1,0 @@
-
-docker run --name mongo-event-store -d mongo:4.2

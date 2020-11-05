@@ -19,7 +19,7 @@ mvn clean install \
 && kubectl apply -n resource-scheduler -f src/main/k8s/OwnerCommandEventProcessor.yaml
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f /Users/boosey/Projects/resource-scheduler/owner-commands/src/main/k8s/AddOwnerTrigger.yaml
+kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addowner -o jsonpath='{.status.subscriberUri}'

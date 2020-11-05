@@ -12,10 +12,10 @@
     <maven.compiler.target>11</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <quarkus-plugin.version>1.8.1.Final</quarkus-plugin.version>
+    <quarkus-plugin.version>1.9.1.Final</quarkus-plugin.version>
     <quarkus.platform.artifact-id>quarkus-universe-bom</quarkus.platform.artifact-id>
     <quarkus.platform.group-id>io.quarkus</quarkus.platform.group-id>
-    <quarkus.platform.version>1.8.1.Final</quarkus.platform.version>
+    <quarkus.platform.version>1.9.1.Final</quarkus.platform.version>
     <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
   </properties>
   <dependencyManagement>
@@ -34,24 +34,16 @@
       <groupId>boosey</groupId>
       <artifactId>owner</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>boosey</groupId>
-      <artifactId>events</artifactId>
+      <artifactId>interfaces</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-hibernate-orm-panache</artifactId>
+      <artifactId>quarkus-resteasy-jsonb</artifactId>
     </dependency>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-jdbc-postgresql</artifactId>
-    </dependency>  
-    <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-resteasy-jsonb</artifactId>
-    </dependency> 
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy</artifactId>
@@ -72,7 +64,15 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-openshift</artifactId>
+      <artifactId>quarkus-rest-client-jsonb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-rest-client-mutiny</artifactId>
     </dependency>
   </dependencies>
   <build>

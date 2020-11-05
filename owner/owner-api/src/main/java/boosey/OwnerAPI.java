@@ -1,8 +1,6 @@
 package boosey;
 
-import java.util.List;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,6 +13,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
@@ -26,52 +25,61 @@ import boosey.owner.Owner;
 @Path("/owners")
 public class OwnerAPI {
 
-    @Inject OwnerQuery query;
-    @Inject OwnerCommand command;
+    @Inject @RestClient OwnerQueryClient query;
+    @Inject @RestClient OwnerCommandClient command;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<List<Owner>> listAll() {
-        return query.listAll();
+    public Uni<Response> listAll() {
+        val r = query.listAll();
+        if (r.getStatusInfo() == Status.OK) {
+            return Uni.createFrom().item(
+                Response
+                    .ok(r.getEntity())
+                    .build()
+            );
+        } else {
+            throw new RuntimeException();
+        }
     }
 
-    @GET
-    @Transactional
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/createtestdata")
-    public Boolean createtestdata() {
+    // @GET
+    // @Transactional
+    // @Produces(MediaType.TEXT_PLAIN)
+    // @Path("/createtestdata")
+    // public Boolean createtestdata() {
 
-        Owner r = new Owner();
-        r.setName("John");
-        r.persist();
+    //     Owner r = new Owner();
+    //     r.setName("John");
+    //     r.persist();
 
-        r = new Owner();
-        r.setName("Kelly");
-        r.persist();
+    //     r = new Owner();
+    //     r.setName("Kelly");
+    //     r.persist();
 
-        r = new Owner();
-        r.setName("Emily");
-        r.persist();
+    //     r = new Owner();
+    //     r.setName("Emily");
+    //     r.persist();
 
-        r = new Owner();
-        r.setName("Zach");
-        r.persist();
+    //     r = new Owner();
+    //     r.setName("Zach");
+    //     r.persist();
 
-        return true;
-    }
+    //     return true;
+    // }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/existsByName")
     public Uni<Boolean> existsByName(@QueryParam("name") String name) {
-        return query.existsByName(name);
+        return Uni.createFrom().item(query.existsByName(name).readEntity(Boolean.class));
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/findByName")
     public Uni<Owner> findByName(@QueryParam("name") String name) {
-        return query.findByName(name);
+        return Uni.createFrom().item(query.findByName(name).readEntity(Owner.class));
     }
     
     @POST
@@ -80,13 +88,11 @@ public class OwnerAPI {
     public Uni<Response> addOwner(Owner owner) {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
-            try {
-                String ownerId = command.addOwner(owner);
-                emitter.complete(Response.accepted(ownerId).build());
-
-            } catch (NotAcceptableException e) {
-                emitter.complete(Response.status(Status.NOT_FOUND).build());
-            }            
+            val r = command.addOwner(owner);
+            if (r.getStatusInfo() == Status.OK)
+                emitter.complete(Response.accepted(r.readEntity(String.class)).build()); 
+            else
+                emitter.complete(Response.status(Status.CONFLICT).build());      
         });        
     }
 
@@ -117,7 +123,7 @@ public class OwnerAPI {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             val cnt = query.count();
-            command.deleteAllOwners();
+            command.deleteAllOwner();
             emitter.complete(Response.ok(cnt).build());
         });
     }

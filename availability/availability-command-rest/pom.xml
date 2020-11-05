@@ -66,10 +66,10 @@
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client</artifactId>
     </dependency>
-    <dependency>
+    <!-- <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-mutiny</artifactId>
-    </dependency>
+    </dependency> -->
   </dependencies>
   <build>
     <plugins>

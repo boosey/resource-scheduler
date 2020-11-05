@@ -1,5 +1,36 @@
-kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: owner-api    
+  namespace: resource-scheduler
+  labels:
+    app: availablity-api
+    app.kubernetes.io/component: owner-api
+    app.kubernetes.io/instance: owner-api
+    app.kubernetes.io/part-of: Owner
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: owner-api
+  replicas: 1
+  revisionHistoryLimit: 0  
+  template:
+    metadata:
+      labels:
+        app: owner-api
+    spec:
+      containers:
+        - name: owner-api
+          image: docker.io/boosey/owner-api
+          ports:
+            - containerPort: 8080
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
 metadata:
   name: owner-api
   namespace: resource-scheduler
@@ -7,47 +38,19 @@ metadata:
     app: owner-api
     app.kubernetes.io/component: owner-api
     app.kubernetes.io/instance: owner-api
-    app.openshift.io/runtime-namespace: resource-scheduler
+    app.kubernetes.io/name: ''
+    app.kubernetes.io/part-of: Owner
+    app.openshift.io/runtime: ''
+    app.openshift.io/runtime-version: latest
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
 spec:
-  strategy:
-    type: Rolling
-    rollingParams:
-      updatePeriodSeconds: 1
-      intervalSeconds: 1
-      timeoutSeconds: 600
-      maxUnavailable: 25%
-      maxSurge: 25%
-    activeDeadlineSeconds: 21600
-  triggers:
-    - type: ImageChange
-      imageChangeParams:
-        automatic: true
-        containerNames:
-          - owner-api
-        from:
-          kind: ImageStreamTag
-          namespace: resource-scheduler
-          name: 'owner-api:latest'
-    - type: ConfigChange
-  replicas: 1
-  revisionHistoryLimit: 3
-  test: false
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
   selector:
     app: owner-api
     deploymentconfig: owner-api
-  template:
-    metadata:
-      labels:
-        app: owner-api
-        deploymentconfig: owner-api
-    spec:
-      containers:
-        - name: owner-api
-          image: docker.io/boosey/owner-api
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-          terminationMessagePath: /dev/termination-log
-          terminationMessagePolicy: File
-          imagePullPolicy: Always
-      restartPolicy: Always
+
