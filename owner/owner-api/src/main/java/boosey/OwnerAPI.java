@@ -43,31 +43,6 @@ public class OwnerAPI {
         }
     }
 
-    // @GET
-    // @Transactional
-    // @Produces(MediaType.TEXT_PLAIN)
-    // @Path("/createtestdata")
-    // public Boolean createtestdata() {
-
-    //     Owner r = new Owner();
-    //     r.setName("John");
-    //     r.persist();
-
-    //     r = new Owner();
-    //     r.setName("Kelly");
-    //     r.persist();
-
-    //     r = new Owner();
-    //     r.setName("Emily");
-    //     r.persist();
-
-    //     r = new Owner();
-    //     r.setName("Zach");
-    //     r.persist();
-
-    //     return true;
-    // }
-
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/existsByName")
@@ -86,7 +61,6 @@ public class OwnerAPI {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> addOwner(Owner owner) {
-
         try {
             val r = command.addOwner(owner);
             if (r.getStatusInfo() == Status.OK)
@@ -99,7 +73,7 @@ public class OwnerAPI {
                             Response
                             .status(Status.CONFLICT)
                             .build());
-                            
+
         } catch (Exception e) {
             e.printStackTrace();
             throw e;

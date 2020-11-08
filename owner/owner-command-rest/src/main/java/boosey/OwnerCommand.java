@@ -1,6 +1,5 @@
 package boosey;
 
-import java.util.UUID;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import boosey.owner.Owner;
@@ -22,7 +21,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 
-
 // @Slf4j
 @Path("/owner-command")
 @ApplicationScoped
@@ -31,7 +29,6 @@ public class OwnerCommand {
     private static Gson gson = new Gson();
 
     @Inject @RestClient OwnerQueryClient query;
-    @Inject @RestClient EventServiceClient events;
 
     @Inject
     @GrpcService("eventsservicegrpc")                     
@@ -61,7 +58,6 @@ public class OwnerCommand {
             e.printStackTrace();
             throw e;
         }
-
     }    
 
     private Boolean existsByName(Owner o) {
@@ -77,14 +73,11 @@ public class OwnerCommand {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)    
     public Boolean replaceOwner(@PathParam("ownerId") String ownerId, Owner owner) {
-
         if (exists(ownerId)) {
-            
             if (!owner.id.equalsIgnoreCase(ownerId))
                 throw new RuntimeException("IDs aren't equal");     
             
             val request = FireRequest.newBuilder()
-                            .setEventId(UUID.randomUUID().toString())
                             .setType(EventType.REPLACE_OWNER)
                             .setSource(EventSource.OWNER_API)
                             .setEventData(gson.toJson(owner))
@@ -103,9 +96,7 @@ public class OwnerCommand {
     @Path("/")
     @Produces(MediaType.TEXT_PLAIN)    
     public Boolean deleteAllOwners() {
-
             val request = FireRequest.newBuilder()
-                            .setEventId(UUID.randomUUID().toString())
                             .setType(EventType.DELETE_ALL_OWNERS)
                             .setSource(EventSource.OWNER_API)
                             .setEventData(gson.toJson(NoEventData.builder().build()))
@@ -120,11 +111,8 @@ public class OwnerCommand {
     @Path("/{ownerId}")
     @Produces(MediaType.TEXT_PLAIN)    
     public Boolean deleteOwner(@PathParam("ownerId") String ownerId) {
-
         if (exists(ownerId)) { 
-
             FireRequest request = FireRequest.newBuilder()
-                            .setEventId(UUID.randomUUID().toString())
                             .setType(EventType.DELETE_OWNER)
                             .setSource(EventSource.OWNER_API)
                             .setEventData(gson.toJson(ItemIdData.builder()
@@ -137,7 +125,7 @@ public class OwnerCommand {
         } else {     
             throw new NotFoundException("Owner does not exist");
         }
-
+        
         return true;
     }    
 }
