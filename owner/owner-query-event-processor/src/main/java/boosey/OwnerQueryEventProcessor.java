@@ -46,7 +46,7 @@ public class OwnerQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "ALL_OWNERS_DELETED")
     @Transactional
-    public void handleAllOwnersDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleAllOwnersDeleted(NoEventData nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
         Owner.deleteAll();
     }

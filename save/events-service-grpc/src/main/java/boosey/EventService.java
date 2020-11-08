@@ -6,75 +6,87 @@ import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.core.MediaType;
-import com.google.gson.Gson;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
-import io.smallrye.mutiny.Uni;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
+import io.smallrye.mutiny.Uni;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Singleton
 public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
 
-    @Inject @RestClient KnativeEventService knativeEventService;
-    private static MongoClient mongoClient;    
-
+    @Inject @RestClient KnativeEventServiceBroker knativeEventServiceBroker;
+    private static MongoClient mongoClient;
+    
     static Map<String, String> env = System.getenv();
     static String mongoUser = env.get("mongouser");
     static String mongoPwd = env.get("mongopwd");
     static String mongoPwdAdmin = env.get("mongopwdadmin");
     static String mongoHost = env.get("MONGO_EVENT_STORE_SERVICE_HOST");
-    static String mongoPort = env.get("MONGO_EVENT_STORE_SERVICE_PORT");;
+    static String mongoPort = env.get("MONGO_EVENT_STORE_SERVICE_PORT");
+
+    @ConfigProperty(name="boosey.default-spec-version")
+    String defaultSpecVersion;
+
+    private String defaultIfUnset(String value, String defaultValue) {
+        return value.length() == 0 ? defaultValue : value;
+    }
+
+    private String defaultToUUIDIfUnset(String value) {
+         return defaultIfUnset(value, UUID.randomUUID().toString());
+    }
+
+    private FireRequest prepareRequest(FireRequest evt) {
+        return FireRequest.newBuilder()
+                .setEventId(defaultToUUIDIfUnset(evt.getEventId()))
+                .setType(evt.getType())
+                .setSpecVersion(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
+                .setSource(evt.getSource())
+                .setSubject(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
+                .setEventData(evt.getEventData())
+                .build();
+    }
 
     @Override
-    public Uni<FireReply> fire(FireRequest request) {
+    public Uni<FireReply> fire(FireRequest evtIn) {
+        try {
+            FireRequest evt = prepareRequest(evtIn);
 
-        knativeEventService.fire(
-            request.getEventId(), 
-            request.getType().name(),
-            request.getSpecVersion(), 
-            request.getSource().name(), 
-            request.getSubject(), 
-            MediaType.APPLICATION_JSON, 
-            request.getEventData());
+            knativeEventServiceBroker.fire(
+                evt.getEventId(), 
+                evt.getType().name(), 
+                evt.getSpecVersion(),
+                evt.getSource().name(), 
+                evt.getSubject(), 
+                MediaType.APPLICATION_JSON, 
+                evt.getEventData());
+         
+            this.getCollection().insertOne(new Document()
+                .append("type", evt.getType().name())
+                .append("source", evt.getSource().name())
+                .append("specVersion", evt.getSpecVersion())
+                .append("subject", evt.getSubject())
+                .append("time", new Date())
+                .append("eventData", evt.getEventData()));  
 
-        log.info("writing event data: " + gson.toJson(request.getEventData()));
-
-        this.getCollection().insertOne(new Document()
-            .append("type", request.getType().name())
-            .append("source", request.getSource().name())
-            .append("specVersion", request.getSpecVersion())
-            .append("subject", request.getSubject())
-            .append("time", new Date())
-            .append("eventData", gson.toJson(request.getEventData())));
-
-        log.info("returning from event fire");     
-
-        return Uni.createFrom().item(
-            FireReply.newBuilder()
-                .setEventId(request.getEventId())
-                .build()  
-        );
-    }   
-
-    private MongoCollection<Document> getCollection() {
-        return EventService
-            .getMongoClient()
-            .getDatabase("resource_scheduler")
-            .getCollection("events");
-    }
+            return Uni.createFrom().item(
+                FireReply.newBuilder().setEventId(evt.getEventId()).build());
+                
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }    
 
     private static MongoClient getMongoClient() {
         if (EventService.mongoClient == null) {
             String connString =  new StringBuilder()
                 .append("mongodb://")
-                // .append(mongoUser)
-                // .append(":")
                 .append("admin:")
-                // .append(mongoPwd)
                 .append(mongoPwdAdmin)
                 .append("@")
                 .append(mongoHost)
@@ -89,20 +101,10 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
         return EventService.mongoClient;
     }
 
-    // private static KnativeEventService getKnativeEventService() {
-    //     if (knativeEventService == null) {
-    //         EventService.knativeEventService = 
-    //             RestClientBuilder.newBuilder()
-    //                 .baseUri(URI.create("http://default-broker.resource-scheduler.svc.cluster.local"))
-    //                 .build(KnativeEventService.class); 
-    //     }
-    //     return EventService.knativeEventService;
-    // } 
-
-    protected String generateUUID() {
-        return UUID.randomUUID().toString();
-    } 
-
-    private static Gson gson = new Gson();    
-
+    private MongoCollection<Document> getCollection() {
+        return EventService
+            .getMongoClient()
+            .getDatabase("resource_scheduler")
+            .getCollection("events");
+    }
 }

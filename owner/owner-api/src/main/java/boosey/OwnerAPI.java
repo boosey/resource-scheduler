@@ -87,13 +87,23 @@ public class OwnerAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> addOwner(Owner owner) {
 
-        return new UniCreateWithEmitter<Response>( emitter -> {
+        try {
             val r = command.addOwner(owner);
             if (r.getStatusInfo() == Status.OK)
-                emitter.complete(Response.accepted(r.readEntity(String.class)).build()); 
+                return Uni.createFrom().item(
+                            Response
+                                .accepted(r.readEntity(String.class))
+                                .build()); 
             else
-                emitter.complete(Response.status(Status.CONFLICT).build());      
-        });        
+                return Uni.createFrom().item(
+                            Response
+                            .status(Status.CONFLICT)
+                            .build());
+                            
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }      
     }
 
     @PUT
@@ -102,7 +112,6 @@ public class OwnerAPI {
     @Path("/{ownerId}")
     public Uni<Response> replaceOwner(@PathParam("ownerId") String ownerId, 
                                             Owner owner) {
-        
         log.info("command.replaceOwner");
 
         return new UniCreateWithEmitter<Response>( emitter -> {
@@ -117,15 +126,11 @@ public class OwnerAPI {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.TEXT_PLAIN)
     public Uni<Response> deleteAllOwners() {
-
-        return new UniCreateWithEmitter<Response>( emitter -> {
-            val cnt = query.count();
+            val r = query.count();
             command.deleteAllOwner();
-            emitter.complete(Response.ok(cnt).build());
-        });
+            return Uni.createFrom().item(Response.ok(r.readEntity(Long.class)).build());
     }
 
     @DELETE
