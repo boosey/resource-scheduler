@@ -34,7 +34,7 @@
       <groupId>boosey</groupId>
       <artifactId>availability</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>boosey</groupId>
       <artifactId>owner</artifactId>
@@ -52,10 +52,14 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-rest-client-jsonb</artifactId>
-    </dependency>   
+    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-jsonb</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-grpc</artifactId>
     </dependency>
   </dependencies>
   <build>

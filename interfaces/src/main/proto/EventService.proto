@@ -11,15 +11,12 @@ service EventService {
 }
 
 message FireRequest {
-
-
     string eventId = 1;
     EventType type = 2;
     EventSource source = 3;
     string specVersion = 4;
     string subject = 5;
     string eventData = 6;
-  
 }
 
 message FireReply {
