@@ -1,8 +1,6 @@
 package boosey;
 
-import java.util.List;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -15,8 +13,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
-
 import boosey.resource.Resource;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
@@ -27,56 +25,32 @@ import lombok.extern.slf4j.Slf4j;
 @Path("/resources")
 public class ResourceAPI {
 
-    @Inject ResourceQuery query;
-    @Inject ResourceCommand command;
+    @Inject @RestClient ResourceQueryClient query;
+    @Inject @RestClient ResourceCommandClient command;
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Uni<List<Resource>> listAll() {
-        return query.listAll();
-    }
-
-    @GET
-    @Transactional
-    @Produces(MediaType.TEXT_PLAIN)
-    @Path("/createtestdata")
-    public Boolean createtestdata() {
-
-        Resource r = new Resource();
-        r.setName("Space 402");
-        r.setActive(true);
-        r.persist();
-
-        r = new Resource();
-        r.setName("Space 401");
-        r.setActive(true);
-        r.persist();
-
-        r = new Resource();
-        r.setName("Space 403");
-        r.setActive(true);
-        r.persist();
-
-        r = new Resource();
-        r.setName("Space 404");
-        r.setActive(true);
-        r.persist();
-
-        return true;
+    public Uni<Response> listAll() {
+        try {
+            return Uni.createFrom().item(query.listAll());    
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/existsByName")
     public Uni<Boolean> existsByName(@QueryParam("name") String name) {
-        return query.existsByName(name);
+        return Uni.createFrom().item(query.existsByName(name).readEntity(Boolean.class));
     }
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/findByName")
     public Uni<Resource> findByName(@QueryParam("name") String name) {
-        return query.findByName(name);
+        return Uni.createFrom().item(query.findByName(name).readEntity(Resource.class));
     }
     
     @POST
@@ -88,12 +62,17 @@ public class ResourceAPI {
 
         return new UniCreateWithEmitter<Response>( emitter -> {
             try {
-                String resourceId = command.addResource(resource);
+                String resourceId = command.addResource(resource).readEntity(String.class);
                 emitter.complete(Response.accepted(resourceId).build());
 
-            } catch (NotAcceptableException e) {
+            } 
+            catch (NotAcceptableException e) {
                 emitter.complete(Response.status(Status.NOT_FOUND).build());
-            }            
+            } 
+            catch (Exception e) {
+                e.printStackTrace();
+                throw e;
+            }        
         });        
     }
 

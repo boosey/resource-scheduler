@@ -1,0 +1,65 @@
+
+# Install Servless Operator
+# Create Knative Serving in knative-serving namespace
+# Create Knative Eventing in knative-eventing namespace
+
+# Create broker in resource-scheduler namespace
+kubectl label namespace resource-scheduler knative-eventing-injection=enabled
+
+# Check for Broker and Pods
+watch kubectl --namespace knativetutorial get broker
+watch kubectl get pods
+
+# Build Project, Docker Image, and Push to Docker Hub
+# then create the knative service
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
+&& docker push docker.io/boosey/resource-query-event-processor \
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
+
+# Create Trigger
+kubectl apply -n resource-scheduler -f src/main/k8s/AddResourceTrigger.yaml
+# Verify triggers
+kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
+kubectl get trigger addresource -o jsonpath='{.status.subscriberUri}'
+
+# Run
+# Tail logs
+stern funq user-container
+# Get Broker URL
+kubectl get broker default -o jsonpath='{.status.address.url}'
+# Start curler pod
+kubectl -n resource-scheduler exec -it curler -- /bin/bash
+
+# Test
+curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
+-X POST \
+-H "Ce-Id: 1234" \
+-H "Ce-Specversion: 1.0" \
+-H "Ce-Type: addResource" \
+-H "Ce-Source: curl" \
+-H "Content-Type: application/json" \
+-d '{"name" : "Space 204", "available" : "true"}'
+
+
+# Update Service
+# IMPORTANT: ResourceQueryProcessorervice.yaml -> update spec:template:metadata:namespace
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
+&& docker push docker.io/boosey/resource-query-event-processor \
+&& kn service delete resource-query-event-processor \
+&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
+
+
+# Create mongodb from mongo supplied operator
+# Create API Key secret
+kubectl -n resource-scheduler \
+  create secret generic resource-scheduler-mongo-cloud-manager-api-key \
+  --from-literal="user=56fa4b37-f68b-4662-8004-b6db9371dff7" \
+  --from-literal="publicApiKey=56fa4b37-f68b-4662-8004-b6db9371dff7"
+
+# Create Config Map
+kubectl create configmap mongo-cloud-manager-config \
+  --from-literal="baseUrl=https://cloud.mongodb.com/v2#/org/5f71414cb909195063a1f252" \
+  --from-literal="projectName=resource-scheduler" \
+  --from-literal="orgId=resource-scheduler"

@@ -1,41 +1,66 @@
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: resourcereplaced
+  annotations:
+    knative-eventing-injection: enabled
+  name: allavailabilitysdeleted
 spec:
   filter:
     attributes:
-      type: RESOURCE_REPLACED
+      type: ALL_AVAILABILITIES_DELETED
+  broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: resource-query-event-processor
---- 
+      name: availability-query-event-processor
+---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: resourcedeleted
+  annotations:
+    knative-eventing-injection: enabled
+  name: availabilityadded
 spec:
   filter:
     attributes:
-      type: RESOURCE_DELETED
+      type: AVAILABILITY_ADDED
+  broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: resource-query-event-processor
---- 
+      name: availability-query-event-processor
+---
 apiVersion: eventing.knative.dev/v1alpha1
 kind: Trigger
 metadata:
-  name: resourceadded
+  annotations:
+    knative-eventing-injection: enabled
+  name: availabilitydeleted
 spec:
   filter:
     attributes:
-      type: RESOURCE_ADDED
+      type: AVAILABILITY_DELETED
+  broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: resource-query-event-processor
+      name: availability-query-event-processor
+---
+apiVersion: eventing.knative.dev/v1alpha1
+kind: Trigger
+metadata:
+  annotations:
+    knative-eventing-injection: enabled
+  name: availabilityreplaced
+spec:
+  filter:
+    attributes:
+      type: AVAILABILITY_REPLACED
+  subscriber:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: availability-query-event-processor

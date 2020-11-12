@@ -8,9 +8,9 @@ import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 
-// @Slf4j
+@Slf4j
 public class OwnerCommandEventProcessor {
 
     private static Gson gson = new Gson();
@@ -22,7 +22,7 @@ public class OwnerCommandEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "ADD_OWNER")
     public void handleAddOwner(Owner owner, @Context CloudEvent eventContext) {
-        
+        log.info("responding to ADD_OWNER");
         grpcEvents.fire(FireRequest.newBuilder()
                         .setType(EventType.OWNER_ADDED)
                         .setSource(EventSource.HANDLE_ADD_OWNER)

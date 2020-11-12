@@ -1,0 +1,117 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: events-data
+  namespace: resource-scheduler
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: vpc.block.csi.ibm.io  
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem  
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: events-data  
+  namespace: resource-scheduler
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - mongodb
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'mongodb:3.6'
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 0
+  test: false
+  selector:
+    name: events-data
+  template:
+    metadata:
+      labels:
+        name: events-data
+    spec:
+      volumes:
+        - name: events-data
+          persistentVolumeClaim:
+            claimName: events-data
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - '-i'
+                - '-c'
+                - >-
+                  mongo 127.0.0.1:27017/$MONGODB_DATABASE -u $MONGODB_USER -p
+                  $MONGODB_PASSWORD --eval="quit()"
+            initialDelaySeconds: 3
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          name: mongodb
+          livenessProbe:
+            tcpSocket:
+              port: 27017
+            initialDelaySeconds: 30
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: MONGODB_USER
+              value: mongouser
+            - name: MONGODB_PASSWORD
+              value: mongopassword
+            - name: MONGODB_ADMIN_PASSWORD
+              value: mongoadminpassword
+            - name: MONGODB_DATABASE
+              value: events
+          securityContext:
+            capabilities: {}
+            privileged: false
+          ports:
+            - containerPort: 27017
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: events-data
+              mountPath: /var/lib/mongodb/data
+          terminationMessagePolicy: File
+          image: image-registry.openshift-image-registry.svc:5000/openshift/mongodb
+      restartPolicy: Always
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: events-data
+  namespace: resource-scheduler
+spec:
+  ports:
+    - name: mongo
+      protocol: TCP
+      port: 27017
+      targetPort: 27017
+  selector:
+    name: events-data
+
+

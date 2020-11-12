@@ -1,14 +1,5 @@
 
-# Install Servless Operator
-# Create Knative Serving in knative-serving namespace
-# Create Knative Eventing in knative-eventing namespace
 
-# Create broker in resource-scheduler namespace
-kubectl label namespace resource-scheduler knative-eventing-injection=enabled
-
-# Check for Broker and Pods
-watch kubectl --namespace knativetutorial get broker
-watch kubectl get pods
 
 # Build Project, Docker Image, and Push to Docker Hub
 # then create the knative service
@@ -16,10 +7,17 @@ mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/owner-command-event-processor . \
 && docker push docker.io/boosey/owner-command-event-processor \
 && kn service delete owner-command-event-processor \
-&& kubectl apply -n resource-scheduler -f src/main/k8s/OwnerCommandEventProcessor.yaml
+&& kn service create owner-command-event-processor  -n resource-scheduler  --image docker.io/boosey/owner-command-event-processor
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
+kubectl create -n resource-scheduler -f src/main/k8s/Triggers.yaml
+
+
+kn trigger create addowner --inject-broker --filter type=ADD_OWNER --sink owner-command-event-processor
+kn trigger create deleteallowners --inject-broker --filter type=DELETE_ALL_OWNERS --sink owner-command-event-processor
+
+
+
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addowner -o jsonpath='{.status.subscriberUri}'

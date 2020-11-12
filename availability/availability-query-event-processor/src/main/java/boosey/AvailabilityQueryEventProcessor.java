@@ -67,7 +67,7 @@ public class AvailabilityQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "ALL_AVAILABILITIES_DELETED")
     @Transactional
-    public void handleAllAvailabilitysDeleted(String nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleAllAvailabilitysDeleted(NoEventData nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
         log.info("processing delete all");
         Availability.deleteAll();

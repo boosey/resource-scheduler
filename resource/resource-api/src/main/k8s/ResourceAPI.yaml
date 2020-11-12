@@ -1,14 +1,13 @@
 kind: DeploymentConfig
 apiVersion: apps.openshift.io/v1
 metadata:
-  annotations:
-    openshift.io/generated-by: OpenShiftWebConsole
   name: resource-api
   namespace: resource-scheduler
   labels:
     app: resource-api
     app.kubernetes.io/component: resource-api
     app.kubernetes.io/instance: resource-api
+    app.kubernetes.io/part-of: Resource
     app.openshift.io/runtime-namespace: resource-scheduler
 spec:
   strategy:
@@ -22,15 +21,6 @@ spec:
     resources: {}
     activeDeadlineSeconds: 21600
   triggers:
-    - type: ImageChange
-      imageChangeParams:
-        automatic: true
-        containerNames:
-          - resource-api
-        from:
-          kind: ImageStreamTag
-          namespace: resource-scheduler
-          name: 'resource-api:latest'
     - type: ConfigChange
   replicas: 1
   revisionHistoryLimit: 10
@@ -55,3 +45,26 @@ spec:
           terminationMessagePolicy: File
           imagePullPolicy: Always
       restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: resource-api
+  namespace: resource-scheduler
+  labels:
+    app: resource-api
+    app.kubernetes.io/component: resource-api
+    app.kubernetes.io/instance: resource-api
+    app.kubernetes.io/part-of: Resource
+    app.openshift.io/runtime-version: latest
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: resource-api
+    deploymentconfig: resource-api
+
+

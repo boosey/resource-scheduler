@@ -1,0 +1,56 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: resource-query-rest    
+  namespace: resource-scheduler
+  labels:
+    app: availablity-api
+    app.kubernetes.io/component: resource-query-rest
+    app.kubernetes.io/instance: resource-query-rest
+    app.kubernetes.io/part-of: Resource
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: resource-query-rest
+  replicas: 1
+  revisionHistoryLimit: 0  
+  template:
+    metadata:
+      labels:
+        app: resource-query-rest
+    spec:
+      containers:
+        - name: resource-query-rest
+          image: docker.io/boosey/resource-query-rest
+          ports:
+            - containerPort: 8080        
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: resource-query-rest
+  namespace: resource-scheduler
+  labels:
+    app: resource-query-rest
+    app.kubernetes.io/component: resource-query-rest
+    app.kubernetes.io/instance: resource-query-rest
+    app.kubernetes.io/name: ''
+    app.kubernetes.io/part-of: Resource
+    app.openshift.io/runtime: ''
+    app.openshift.io/runtime-version: latest
+  annotations:
+    openshift.io/generated-by: OpenShiftWebConsole
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: resource-query-rest
+    deploymentconfig: resource-query-rest
+

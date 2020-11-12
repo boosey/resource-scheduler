@@ -1,27 +1,21 @@
 
-# Install Servless Operator
-# Create Knative Serving in knative-serving namespace
-# Create Knative Eventing in knative-eventing namespace
 
-# Create broker in resource-scheduler namespace
-kubectl label namespace resource-scheduler knative-eventing-injection=enabled
-
-# Check for Broker and Pods
-watch kubectl --namespace knativetutorial get broker
-watch kubectl get pods
 
 # Build Project, Docker Image, and Push to Docker Hub
 # then create the knative service
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
 && docker push docker.io/boosey/resource-query-event-processor \
-&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
+&& kn service delete -n resource-scheduler resource-query-event-processor \
+&& kn service create resource-query-event-processor -n resource-scheduler  --image docker.io/boosey/resource-query-event-processor
+
+
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f src/main/k8s/AddResourceTrigger.yaml
+kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
-kubectl get trigger addresource -o jsonpath='{.status.subscriberUri}'
+kubectl get trigger addavailability -o jsonpath='{.status.subscriberUri}'
 
 # Run
 # Tail logs
@@ -36,19 +30,21 @@ curl -v "http://default-broker.resource-scheduler.svc.cluster.local" \
 -X POST \
 -H "Ce-Id: 1234" \
 -H "Ce-Specversion: 1.0" \
--H "Ce-Type: addResource" \
+-H "Ce-Type: addAvailability" \
 -H "Ce-Source: curl" \
 -H "Content-Type: application/json" \
 -d '{"name" : "Space 204", "available" : "true"}'
 
 
 # Update Service
-# IMPORTANT: ResourceQueryProcessorervice.yaml -> update spec:template:metadata:namespace
+# IMPORTANT: AvailabilityQueryProcessorervice.yaml -> update spec:template:metadata:namespace
 mvn clean install \
-&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-event-processor . \
-&& docker push docker.io/boosey/resource-query-event-processor \
-&& kn service delete resource-query-event-processor \
-&& kubectl apply -n resource-scheduler -f src/main/k8s/ResourceQueryEventProcessor.yaml
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-query-event-processor . \
+&& docker push docker.io/boosey/availability-query-event-processor \
+&& kubectl apply -n resource-scheduler -f mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/availability-query-event-processor . \
+&& docker push docker.io/boosey/availability-query-event-processor \
+&& kubectl apply -n resource-scheduler -f src/main/k8s/AvailabilityQueryEventProcessor.yaml
 
 
 # Create mongodb from mongo supplied operator

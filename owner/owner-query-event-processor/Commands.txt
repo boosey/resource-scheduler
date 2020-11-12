@@ -16,10 +16,12 @@ mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/owner-query-event-processor . \
 && docker push docker.io/boosey/owner-query-event-processor \
 && kn service delete owner-query-event-processor \
-&& kubectl apply -n resource-scheduler -f src/main/k8s/OwnerQueryEventProcessor.yaml
+&& kn service create owner-query-event-processor -n resource-scheduler  --image docker.io/boosey/owner-query-event-processor
 
 # Create Trigger
 kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
+
+
 # Verify triggers
 kubectl --namespace resource-scheduler  get triggers.eventing.knative.dev
 kubectl get trigger addowner -o jsonpath='{.status.subscriberUri}'

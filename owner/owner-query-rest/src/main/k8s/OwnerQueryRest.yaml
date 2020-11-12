@@ -25,7 +25,7 @@ spec:
         - name: owner-query-rest
           image: docker.io/boosey/owner-query-rest
           ports:
-            - containerPort: 8080
+            - containerPort: 8080        
           imagePullPolicy: Always
       restartPolicy: Always
 ---

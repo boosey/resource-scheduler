@@ -1,8 +1,11 @@
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: addowner
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default  
   filter:
     attributes:
       type: ADD_OWNER
@@ -12,11 +15,14 @@ spec:
       kind: Service
       name: owner-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteallowners
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default  
   filter:
     attributes:
       type: DELETE_ALL_OWNERS
@@ -26,11 +32,14 @@ spec:
       kind: Service
       name: owner-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteowner
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default  
   filter:
     attributes:
       type: DELETE_OWNER
@@ -40,11 +49,14 @@ spec:
       kind: Service
       name: owner-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: replaceowner
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default  
   filter:
     attributes:
       type: REPLACE_OWNER

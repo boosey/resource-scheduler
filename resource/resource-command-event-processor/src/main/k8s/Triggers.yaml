@@ -1,7 +1,9 @@
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1beta1
 kind: Trigger
 metadata:
   name: addresource
+  annotations:
+    knative-eventing-injection: enabled  
 spec:
   filter:
     attributes:
@@ -11,11 +13,13 @@ spec:
       apiVersion: serving.knative.dev/v1
       kind: Service
       name: resource-command-event-processor
---- 
-apiVersion: eventing.knative.dev/v1alpha1
+---
+apiVersion: eventing.knative.dev/v1beta1
 kind: Trigger
 metadata:
   name: deleteallresources
+  annotations:
+    knative-eventing-injection: enabled  
 spec:
   filter:
     attributes:
@@ -25,11 +29,13 @@ spec:
       apiVersion: serving.knative.dev/v1
       kind: Service
       name: resource-command-event-processor
---- 
-apiVersion: eventing.knative.dev/v1alpha1
+---
+apiVersion: eventing.knative.dev/v1beta1
 kind: Trigger
 metadata:
   name: deleteresource
+  annotations:
+    knative-eventing-injection: enabled  
 spec:
   filter:
     attributes:
@@ -39,11 +45,13 @@ spec:
       apiVersion: serving.knative.dev/v1
       kind: Service
       name: resource-command-event-processor
---- 
-apiVersion: eventing.knative.dev/v1alpha1
+---
+apiVersion: eventing.knative.dev/v1beta1
 kind: Trigger
 metadata:
   name: replaceresource
+  annotations:
+    knative-eventing-injection: enabled  
 spec:
   filter:
     attributes:
@@ -53,3 +61,4 @@ spec:
       apiVersion: serving.knative.dev/v1
       kind: Service
       name: resource-command-event-processor
+      
