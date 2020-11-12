@@ -19,7 +19,7 @@ mvn clean install \
 && kn service create owner-query-event-processor -n resource-scheduler  --image docker.io/boosey/owner-query-event-processor
 
 # Create Trigger
-kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
+kubectl create -n resource-scheduler -f src/main/k8s/Triggers.yaml
 
 
 # Verify triggers

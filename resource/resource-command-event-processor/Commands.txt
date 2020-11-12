@@ -5,12 +5,16 @@
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-command-event-processor . \
 && docker push docker.io/boosey/resource-command-event-processor \
-&& kn service delete resource-command-event-processor \
+&& kn service delete resource-command-event-processor -n resource-scheduler \
 && kn service create resource-command-event-processor -n resource-scheduler --image docker.io/boosey/resource-command-event-processor
 
-# Create Triggers
+
+# Create Trigger
 kubectl create -n resource-scheduler -f src/main/k8s/Triggers.yaml
 
+
+kn trigger create addowner --inject-broker --filter type=ADD_OWNER --sink owner-command-event-processor
+kn trigger create deleteallowners --inject-broker --filter type=DELETE_ALL_OWNERS --sink owner-command-event-processor
 
 
 

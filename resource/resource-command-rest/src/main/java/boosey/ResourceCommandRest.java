@@ -33,11 +33,11 @@ public class ResourceCommandRest {
     @Produces(MediaType.TEXT_PLAIN)    
     public String addResource(Resource resource) {
 
-        // if (query.existsByName(resource.getName()).readEntity(Boolean.class)) {
+        if (query.existsByName(resource.getName()).readEntity(Boolean.class)) {
 
-        //     throw new NotAcceptableException("Resource Exists");
+            throw new NotAcceptableException("Resource Exists");
 
-        // } else {    
+        } else {    
             
             log.info("adding resource: " + resource);
             try {
@@ -49,9 +49,8 @@ public class ResourceCommandRest {
             } catch (Exception e) {
                 e.printStackTrace();
                 throw e;
-            }
-                    
-        // }
+            }          
+        }
 
         return resource.getId();
     }    
@@ -62,7 +61,6 @@ public class ResourceCommandRest {
     public Boolean replaceResource(String resourceId, Resource resource) {
 
         if (query.exists(resourceId).readEntity(Boolean.class)) {
-    
             // Just in case
             resource.setId(resourceId);
  
@@ -99,11 +97,11 @@ public class ResourceCommandRest {
 
         if (query.exists(resourceId).readEntity(Boolean.class)) {
       
-        grpcEvents.fire(FireRequest.newBuilder()
-                    .setType(EventType.DELETE_RESOURCE)
-                    .setSource(EventSource.RESOURCE_API)
-                    .setEventData(gson.toJson(ItemIdData.builder().id(resourceId).build()))
-                    .build());  
+            grpcEvents.fire(FireRequest.newBuilder()
+                        .setType(EventType.DELETE_RESOURCE)
+                        .setSource(EventSource.RESOURCE_API)
+                        .setEventData(gson.toJson(ItemIdData.builder().id(resourceId).build()))
+                        .build());  
         } else {        
             throw new NotAcceptableException("Resource Does Not Exist");
         }

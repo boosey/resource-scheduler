@@ -46,8 +46,8 @@ public class ResourceCommandEventProcessor {
     public void handleDeleteAllResources(NoEventData eventData, @Context CloudEvent eventContext) {
 
         grpcEvents.fire(FireRequest.newBuilder()        
-                        .setType(EventType.ALL_AVAILABILITIES_DELETED)
-                        .setSource(EventSource.HANDLE_DELETE_ALL_AVAILABILITIES)
+                        .setType(EventType.ALL_RESOURCES_DELETED)
+                        .setSource(EventSource.HANDLE_DELETE_ALL_RESOURCES)
                         .setEventData(gson.toJson(NoEventData.builder().build()))
                         .build());              
     }

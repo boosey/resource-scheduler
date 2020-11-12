@@ -11,6 +11,13 @@ mvn clean install \
 
 
 
+# Create Triggers
+kubectl create -n resource-scheduler -f src/main/k8s/Triggers.yaml
+
+
+
+
+
 # Create Trigger
 kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml
 # Verify triggers

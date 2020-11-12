@@ -1,15 +1,14 @@
 apiVersion: serving.knative.dev/v1
 kind: Service
 metadata:
-  name: availability-query-event-processor
+  name: resource-query-event-processor
   namespace: resource-scheduler
 spec:
   template:
     metadata:
-      name: availability-query-event-processor-v1
+      name: resource-query-event-processor-v1
       annotations:
         autoscaling.knative.dev/target: "1"
     spec:
       containers:
-        - image: docker.io/boosey/availability-query-event-processor
-   
+        - image: docker.io/boosey/resource-query-event-processor

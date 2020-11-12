@@ -1,66 +1,67 @@
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   annotations:
     knative-eventing-injection: enabled
-  name: allavailabilitysdeleted
+  name: allresourcesdeleted
 spec:
   filter:
     attributes:
-      type: ALL_AVAILABILITIES_DELETED
+      type: ALL_RESOURCES_DELETED
   broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: availability-query-event-processor
+      name: resource-query-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   annotations:
     knative-eventing-injection: enabled
-  name: availabilityadded
+  name: resourceadded
 spec:
   filter:
     attributes:
-      type: AVAILABILITY_ADDED
+      type: RESOURCE_ADDED
   broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: availability-query-event-processor
+      name: resource-query-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   annotations:
     knative-eventing-injection: enabled
-  name: availabilitydeleted
+  name: resourcedeleted
 spec:
   filter:
     attributes:
-      type: AVAILABILITY_DELETED
+      type: RESOURCE_DELETED
   broker: default      
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: availability-query-event-processor
+      name: resource-query-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   annotations:
     knative-eventing-injection: enabled
-  name: availabilityreplaced
+  name: resourcereplaced
 spec:
+  broker: default
   filter:
     attributes:
-      type: AVAILABILITY_REPLACED
+      type: RESOURCE_REPLACED
   subscriber:
     ref:
       apiVersion: serving.knative.dev/v1
       kind: Service
-      name: availability-query-event-processor
+      name: resource-query-event-processor

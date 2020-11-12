@@ -9,6 +9,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import boosey.owner.Owner;
 import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 
 @Path("/owner-query")
 @ApplicationScoped
@@ -16,9 +17,10 @@ public class OwnerQuery {
 
     @GET
     @Path("/")    
-    @Produces(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)    
     public Uni<List<Owner>> listAll() {
-        return Uni.createFrom().item(Owner.listAll());
+        return new UniCreateWithEmitter<List<Owner>>( emitter ->  
+            emitter.complete(Owner.listAll()));
     }
 
     @GET
@@ -48,5 +50,4 @@ public class OwnerQuery {
     public Uni<Owner> findByName(@PathParam("ownerName") String name) {
         return Owner.findByName(name);
     }
-
 }

@@ -8,7 +8,7 @@ spec:
     metadata:
       name: owner-query-event-processor-v1
       annotations:
-        autoscaling.knative.dev/target: "5"
+        autoscaling.knative.dev/target: "1"
     spec:
       containers:
         - image: docker.io/boosey/owner-query-event-processor

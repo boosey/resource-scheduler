@@ -12,4 +12,4 @@ kubectl create -n resource-scheduler -f src/main/k8s/ResourceQueryRest.yaml
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/resource-query-rest . \
 && docker push docker.io/boosey/resource-query-rest \
-&& oc rollout latest deploymentconfig/resource-query-rest  
+&& oc rollout latest -n resource-scheduler deploymentconfig/resource-query-rest  

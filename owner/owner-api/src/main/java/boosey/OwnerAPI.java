@@ -31,16 +31,13 @@ public class OwnerAPI {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Uni<Response> listAll() {
-        val r = query.listAll();
-        if (r.getStatusInfo() == Status.OK) {
-            return Uni.createFrom().item(
-                Response
-                    .ok(r.getEntity())
-                    .build()
-            );
-        } else {
-            throw new RuntimeException();
-        }
+
+        try {
+            return Uni.createFrom().item(query.listAll());    
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }        
     }
 
     @GET

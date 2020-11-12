@@ -42,8 +42,6 @@ metadata:
     app.kubernetes.io/part-of: Resource
     app.openshift.io/runtime: ''
     app.openshift.io/runtime-version: latest
-  annotations:
-    openshift.io/generated-by: OpenShiftWebConsole
 spec:
   ports:
     - name: 8080-tcp
