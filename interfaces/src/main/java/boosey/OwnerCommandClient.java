@@ -1,5 +1,6 @@
 package boosey;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -17,12 +18,14 @@ public interface OwnerCommandClient {
 
     @POST
     @Path("/")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)    
+    @Produces(MediaType.APPLICATION_JSON)
     Response addOwner(Owner owner);
 
     @PUT
     @Path("/{id}")
-    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)    
+    @Produces(MediaType.APPLICATION_JSON)
     Response replaceOwner(@PathParam("id") String id, Owner owner);
 
     @DELETE

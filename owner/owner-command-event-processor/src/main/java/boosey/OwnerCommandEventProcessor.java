@@ -1,8 +1,6 @@
 package boosey;
 
 import javax.inject.Inject;
-import com.google.gson.Gson;
-import boosey.owner.Owner;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
@@ -13,54 +11,52 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OwnerCommandEventProcessor {
 
-    private static Gson gson = new Gson();
-
     @Inject
     @GrpcService("eventsservicegrpc")                   
     EventServiceGrpc.EventServiceBlockingStub grpcEvents;    
 
     @Funq
     @CloudEventMapping(trigger = "ADD_OWNER")
-    public void handleAddOwner(Owner owner, @Context CloudEvent eventContext) {
+    public void handleAddOwner(EventData eventData, @Context CloudEvent eventContext) {
         log.info("responding to ADD_OWNER");
         grpcEvents.fire(FireRequest.newBuilder()
                         .setType(EventType.OWNER_ADDED)
                         .setSource(EventSource.HANDLE_ADD_OWNER)
-                        .setEventData(gson.toJson(owner))
+                        .setEventData(eventData.value)
                         .build());
       
     }
 
     @Funq
     @CloudEventMapping(trigger = "REPLACE_OWNER")
-    public void handleReplaceOwner(Owner owner, @Context CloudEvent eventContext) {
+    public void handleReplaceOwner(EventData eventData, @Context CloudEvent eventContext) {
 
         grpcEvents.fire(FireRequest.newBuilder()
                         .setType(EventType.OWNER_REPLACED)
                         .setSource(EventSource.HANDLE_REPLACE_OWNER)
-                        .setEventData(gson.toJson(owner))
+                        .setEventData(eventData.value)
                         .build());        
     }
          
     @Funq
     @CloudEventMapping(trigger = "DELETE_ALL_OWNERS")
-    public void handleDeleteAllOwners(NoEventData eventData, @Context CloudEvent eventContext) {
+    public void handleDeleteAllOwners(EventData eventData, @Context CloudEvent eventContext) {
 
         grpcEvents.fire(FireRequest.newBuilder()
                 .setType(EventType.ALL_OWNERS_DELETED)
                 .setSource(EventSource.HANDLE_DELETE_ALL_OWNERS)
-                .setEventData(gson.toJson(NoEventData.builder().build()))
+                .setEventData(eventData.value)
                 .build());
     }
 
     @Funq
     @CloudEventMapping(trigger = "DELETE_OWNER")
-    public void handleDeleteOwner(ItemIdData ownerId, @Context CloudEvent evtCtx) {
+    public void handleDeleteOwner(EventData eventData, @Context CloudEvent evtCtx) {
 
         grpcEvents.fire(FireRequest.newBuilder()
                 .setType(EventType.OWNER_DELETED)
                 .setSource(EventSource.HANDLE_DELETE_OWNER)
-                .setEventData(gson.toJson(ownerId))
+                .setEventData(eventData.value)
                 .build());        
     }
 

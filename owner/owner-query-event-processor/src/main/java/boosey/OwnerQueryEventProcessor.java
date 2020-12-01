@@ -1,5 +1,7 @@
 package boosey;
 
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
@@ -17,10 +19,14 @@ import lombok.val;
 // @Slf4j
 public class OwnerQueryEventProcessor {
 
+    private static Jsonb jsonb = JsonbBuilder.create();        
+
     @Funq
     @CloudEventMapping(trigger = "OWNER_ADDED")
     @Transactional
-    public void handleOwnerAdded(Owner owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerAdded(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+
+        Owner owner = jsonb.fromJson(eventData.value, Owner.class);
 
         val r = new Owner(); 
         r.setId(owner.getId());
@@ -34,7 +40,9 @@ public class OwnerQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "OWNER_REPLACED")
     @Transactional
-    public void handleOwnerReplaced(Owner owner, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerReplaced(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+
+        Owner owner = jsonb.fromJson(eventData.value, Owner.class);
 
         Owner r = Owner.findById(owner.getId());
         r.setName(owner.getName());
@@ -46,7 +54,7 @@ public class OwnerQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "ALL_OWNERS_DELETED")
     @Transactional
-    public void handleAllOwnersDeleted(NoEventData nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleAllOwnersDeleted(EventData nil, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
 
         Owner.deleteAll();
     }
@@ -54,7 +62,9 @@ public class OwnerQueryEventProcessor {
     @Funq
     @CloudEventMapping(trigger = "OWNER_DELETED")
     @Transactional
-    public void handleOwnerDeleted(ItemIdData ownerId, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleOwnerDeleted(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+
+        ItemIdData ownerId = jsonb.fromJson(eventData.value, ItemIdData.class);
 
         Owner.deleteById(ownerId.getId()); 
     }

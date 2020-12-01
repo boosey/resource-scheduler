@@ -1,0 +1,2 @@
+docker build -t boosey/omnidb:latest .
+docker push boosey/omnidb:latest

@@ -15,6 +15,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+import boosey.resource.Availability;
 import boosey.resource.Resource;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
@@ -101,11 +102,9 @@ public class ResourceAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Uni<Response> deleteAllResources() {
 
-        return new UniCreateWithEmitter<Response>( emitter -> {
-            val cnt = query.count();
+            val r = query.count();
             command.deleteAllResources();
-            emitter.complete(Response.ok(cnt).build());
-        });
+            return Uni.createFrom().item(Response.ok(r.readEntity(Long.class)).build());        
     }
 
     @DELETE
@@ -126,4 +125,45 @@ public class ResourceAPI {
             }
         });
     }
+
+    // Availability API
+
+    @POST
+    @Path("/{resourceId}/availability")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Uni<Response> addAvailability(@PathParam("resourceId") String resourceId, 
+                            Availability availability) {
+
+            return Uni.createFrom().item(
+                Response
+                    .ok()
+                    .entity(command.addResourceAvailability(resourceId, availability))
+                    .build());
+    }   
+
+    @GET
+    @Path("/availability")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Uni<Response> listAllAvailability() {
+        try { 
+            return Uni.createFrom().item(query.listAllAvailability());    
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }    
+
+    @GET
+    @Path("/{resourceId}/availability")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Uni<Response> listResourceAvailability(@PathParam("resourceId") String resourceId) {
+        try { 
+            return Uni.createFrom().item(query.listResourceAvailability(resourceId));    
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }    
+
 }

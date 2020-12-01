@@ -12,3 +12,4 @@ spec:
     spec:
       containers:
         - image: docker.io/boosey/resource-command-event-processor
+        

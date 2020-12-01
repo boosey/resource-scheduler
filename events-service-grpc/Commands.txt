@@ -13,3 +13,15 @@ mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/eventsservicegrpc . \
 && docker push docker.io/boosey/eventsservicegrpc \
 && oc rollout latest deploymentconfig/eventsservicegrpc  
+
+
+
+
+
+curl -v "http://broker-ingress.knative-eventing.svc.cluster.local/resource-scheduler/default/" \
+-H "Ce-Id: 1234" \
+-H "Ce-Specversion: 1.0" \
+-H "Ce-Type: ADD_RESOURCE" \
+-H "Ce-Source: RESOURCE_API" \
+-H "Content-Type: text/plain" \
+-d '"{\"id\":\"c8c9f318-36db-4f73-9d3a-b3db45b8aed5\",\"name\":\"Space 416\",\"ownerId\":\"e0696ad4-538e-4e10-b1db-b1fedbc69e51\",\"active\":true,\"availableByDefault\":true}"'

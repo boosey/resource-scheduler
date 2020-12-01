@@ -1,5 +1,5 @@
 
-
+oc label namespace resource-scheduler eventing.knative.dev/injection=enabled
 
 # Build Project, Docker Image, and Push to Docker Hub
 # then create the knative service

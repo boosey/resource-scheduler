@@ -2,13 +2,14 @@ package boosey;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import boosey.owner.Owner;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
 import lombok.val;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
-import com.google.gson.Gson;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -26,7 +27,7 @@ import javax.ws.rs.PathParam;
 @ApplicationScoped
 public class OwnerCommand {
 
-    private static Gson gson = new Gson();
+    private static Jsonb jsonb = JsonbBuilder.create();
 
     @Inject @RestClient OwnerQueryClient query;
 
@@ -37,7 +38,7 @@ public class OwnerCommand {
     @POST
     @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addOwner(Owner owner) {
         try {
             if (!existsByName(owner)) { 
@@ -45,7 +46,7 @@ public class OwnerCommand {
                 val request = FireRequest.newBuilder()
                                 .setType(EventType.ADD_OWNER)
                                 .setSource(EventSource.OWNER_API)
-                                .setEventData(gson.toJson(owner))
+                                .setEventData(jsonb.toJson(owner))
                                 .build();
 
                 val reply = grpcEvents.fire(request);
@@ -80,7 +81,7 @@ public class OwnerCommand {
             val request = FireRequest.newBuilder()
                             .setType(EventType.REPLACE_OWNER)
                             .setSource(EventSource.OWNER_API)
-                            .setEventData(gson.toJson(owner))
+                            .setEventData(jsonb.toJson(owner))
                             .build();
 
             grpcEvents.fire(request);            
@@ -99,7 +100,7 @@ public class OwnerCommand {
             val request = FireRequest.newBuilder()
                             .setType(EventType.DELETE_ALL_OWNERS)
                             .setSource(EventSource.OWNER_API)
-                            .setEventData(gson.toJson(NoEventData.builder().build()))
+                            .setEventData(jsonb.toJson(NoEventData.builder().build()))
                             .build();
 
             grpcEvents.fire(request);                   
@@ -115,7 +116,7 @@ public class OwnerCommand {
             FireRequest request = FireRequest.newBuilder()
                             .setType(EventType.DELETE_OWNER)
                             .setSource(EventSource.OWNER_API)
-                            .setEventData(gson.toJson(ItemIdData.builder()
+                            .setEventData(jsonb.toJson(ItemIdData.builder()
                                             .id(ownerId)
                                             .build()))
                             .build();

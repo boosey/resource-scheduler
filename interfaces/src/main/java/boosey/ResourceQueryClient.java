@@ -33,7 +33,7 @@ public interface ResourceQueryClient {
     public Response count(); 
 
     @GET
-    @Path("/exists/{id}")
+    @Path("/{id}/exists")
     @Produces(MediaType.APPLICATION_JSON)      
     public Response exists(@PathParam("id") String id); 
 
@@ -41,4 +41,41 @@ public interface ResourceQueryClient {
     @Path("/findByName/{resourceName}")
     @Produces(MediaType.APPLICATION_JSON)     
     public Response findByName(@PathParam("resourceName") String name); 
+
+    // Availability API
+    @GET
+    @Path("/availability")    
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listAllAvailability();
+    
+    @GET
+    @Path("/{resourceId}/availability")    
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listResourceAvailability(@PathParam("resourceId") String resourceId);
+
+    @GET
+    @Path("/availability/{id}")
+    @Produces(MediaType.APPLICATION_JSON)       
+    public Response getAvailability(@PathParam("id") String id);
+
+    @GET
+    @Path("/availability/count")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response countAllAvailability();
+
+    @GET
+    @Path("/{resourceId}/availability/count")    
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response countResourceAvailability(@PathParam("resourceId") String resourceId);
+     
+    @GET
+    @Path("/availability/exists/{id}")
+    @Produces(MediaType.TEXT_PLAIN)       
+    public Response existsAvailability(@PathParam("id") String id);
+     
+    @GET
+    @Path("/availabilityForResource/{id}")
+    @Produces(MediaType.APPLICATION_JSON)       
+    public Response availabilityForResource(@PathParam("id") String id);
+
 }

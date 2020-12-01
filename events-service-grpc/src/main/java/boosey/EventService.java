@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.UUID;
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import javax.json.bind.Jsonb;
+import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.core.MediaType;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
@@ -18,6 +20,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Singleton
 public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
+
+    private static Jsonb jsonb = JsonbBuilder.create();
 
     @Inject @RestClient KnativeEventServiceBroker knativeEventServiceBroker;
     private static MongoClient mongoClient;
@@ -33,7 +37,7 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
     String defaultSpecVersion;
 
     private String defaultIfUnset(String value, String defaultValue) {
-        return value.length() == 0 ? defaultValue : value;
+        return (value == null || value.length() == 0) ? defaultValue : value;
     }
 
     private String defaultToUUIDIfUnset(String value) {
@@ -46,25 +50,30 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
                 .setType(evt.getType())
                 .setSpecVersion(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
                 .setSource(evt.getSource())
-                .setSubject(defaultIfUnset(evt.getSpecVersion(), ""))
-                .setEventData(evt.getEventData())
+                // .setSubject(defaultIfUnset(evt.getSpecVersion(), "null"))
+                .setEventData(jsonb.toJson(EventData.builder().value(evt.getEventData()).build()))
                 .build();
     }
 
     @Override
     public Uni<FireReply> fire(FireRequest evtIn) {
         try {
-            FireRequest evt = prepareRequest(evtIn);
 
-            log.info("firing: " + evt);
-            log.info("event type: " + evt.getType().name());
+            FireRequest evt = prepareRequest(evtIn);
+            log.info("------------------------------------------------------------------------------");
+            log.info("eventId: " + evt.getEventId());
+            log.info("event type / source: " + evt.getType().name() + " / " + evt.getSource().name());
+            log.info("spec version: " + evt.getSpecVersion());
+            log.info("media type: " + MediaType.APPLICATION_JSON);
+            log.info("data: " + evt.getEventData());
+            log.info("------------------------------------------------------------------------------");
 
             knativeEventServiceBroker.fire(
                 evt.getEventId(), 
                 evt.getType().name(), 
                 evt.getSpecVersion(),
                 evt.getSource().name(), 
-                evt.getSubject(), 
+                // evt.getSubject(), 
                 MediaType.APPLICATION_JSON, 
                 evt.getEventData());
          
