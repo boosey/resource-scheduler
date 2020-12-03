@@ -1,0 +1,60 @@
+package boosey;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
+
+import boosey.reservation.Reservation;
+import io.quarkus.grpc.runtime.annotations.GrpcService;
+import io.smallrye.mutiny.Uni;
+import io.smallrye.mutiny.operators.UniCreateWithEmitter;
+
+@ApplicationScoped
+public class ReservationQuery {
+
+    @Inject
+    @GrpcService("reservations_query_grpc")
+    ReservationQueryServiceGrpc.ReservationQueryServiceBlockingStub reservationsQuery;    
+
+    public Uni<List<Reservation>> listAll() {
+
+        return new UniCreateWithEmitter<List<Reservation>>(emitter ->  
+            emitter.complete(         
+                reservationsQuery
+                    .listAll(ListAllRequest.newBuilder().build())
+                    .getReservationsList().stream()
+                        .map(rg -> {
+                            Reservation r = new Reservation();
+                            r.setId(rg.getId());
+                            r.setResourceId(rg.getResourceId());
+                            r.setReserverId(rg.getReserverId());
+                            r.setStartTime(LocalDateTime.parse(rg.getStartTime()));
+                            r.setEndTime(LocalDateTime.parse(rg.getEndTime()));
+                            return r;
+                                
+                        })
+                        .collect(Collectors.toList()))
+            );
+    }
+
+    public long count() {
+        try {
+            return reservationsQuery.count(CountRequest.getDefaultInstance()).getCount();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+        
+    }
+
+    public Uni<Boolean> exists(String id) {
+        return Uni.createFrom().item(
+        reservationsQuery.exists(ExistsRequest.newBuilder()
+                .setId(id)
+                .build())
+        .getExists());
+    }
+}

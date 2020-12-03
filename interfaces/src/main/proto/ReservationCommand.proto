@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "boosey";
+option java_outer_classname = "ReservationCommandProto";
+
+package reservationcommand;
+
+service ReservationCommandService {
+    rpc add (AddReservationRequest) returns (AddReservationReply) {}
+}
+
+message AddReservationRequest {
+    ReservationGrpcC reservation = 1;
+}
+
+message AddReservationReply {
+    string id = 1;
+}
+
+message ReservationGrpcC {
+    string id = 1;
+    string resourceId = 2;
+    string reserverId = 3;
+    string startTime = 4;
+    string endTime = 5;
+    ReservationStateC state = 6;
+}
+
+enum ReservationStateC {
+    RESERVATION_STATE_UNKNOWN = 0;
+    RESERVATION_REQUESTED = 1;
+    RESERVATION_ACCEPTED = 2;
+    RESERVARION_DENIED = 3;
+}
+

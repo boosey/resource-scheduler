@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-reservations
+  namespace: resource-scheduler
+  annotations:
+    volume.beta.kubernetes.io/storage-provisioner: vpc.block.csi.ibm.io  
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem      
+---
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  annotations:
+    template.alpha.openshift.io/wait-for-ready: 'true'
+  name: postgres-reservations
+  namespace: resource-scheduler
+spec:
+  strategy:
+    type: Recreate
+    recreateParams:
+      timeoutSeconds: 600
+    resources: {}
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - postgresql
+        from:
+          kind: ImageStreamTag
+          namespace: openshift
+          name: 'postgresql:10'
+    - type: ConfigChange
+  replicas: 1
+  revisionHistoryLimit: 1
+  test: false
+  selector:
+    name: postgres-reservations
+  template:
+    metadata:
+      labels:
+        name: postgres-reservations
+    spec:
+      volumes:
+        - name: postgres-reservations
+          persistentVolumeClaim:
+            claimName: postgres-reservations
+      containers:
+        - resources:
+            limits:
+              memory: 512Mi
+          readinessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: postgresql
+          livenessProbe:
+            exec:
+              command:
+                - /usr/libexec/check-container
+                - '--live'
+            initialDelaySeconds: 120
+            timeoutSeconds: 10
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: POSTGRESQL_USER
+              value: postgresuser
+            - name: POSTGRESQL_PASSWORD
+              value: postgrespassword
+            - name: POSTGRESQL_DATABASE
+              value: reservations
+          securityContext:
+            capabilities: {}
+            privileged: false
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: postgres-reservations
+              mountPath: /var/lib/pgsql/data
+          terminationMessagePolicy: File
+          image: image-registry.openshift-image-registry.svc:5000/openshift/postgresql
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: postgres-reservations
+  namespace: resource-scheduler
+spec:
+  ports:
+    - name: postgresql
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
+  selector:
+    name: postgres-reservations
+
+

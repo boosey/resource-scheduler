@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "boosey";
+option java_outer_classname = "ReservationQueryProto";
+
+package reservationquery;
+
+service ReservationQueryService {
+    rpc listAll (ListAllRequest) returns (ListAllReply) {}
+    rpc get (GetRequest) returns (GetReply) {}
+    rpc count (CountRequest) returns (CountReply) {}
+    rpc exists (ExistsRequest) returns (ExistsReply) {}
+
+}
+
+message ListAllRequest {
+}
+
+message ListAllReply {
+    repeated ReservationGrpc reservations = 1;
+}
+
+message GetRequest {
+    string id = 1;
+}
+
+message GetReply {
+    ReservationGrpc reservation = 1;
+}
+
+message CountRequest {
+}
+
+message CountReply {
+    int64 count = 1;
+}
+
+message ExistsRequest {
+    string id = 1;
+}
+
+message ExistsReply {
+    bool exists = 1;
+}
+
+message ReservationGrpc {
+    string id = 1;
+    string resourceId = 2;
+    string reserverId = 3;
+    string startTime = 4;
+    string endTime = 5;
+    ReservationState state = 6;
+}
+
+enum ReservationState {
+    RESERVATION_STATE_UNKNOWN = 0;
+    RESERVATION_REQUESTED = 1;
+    RESERVATION_ACCEPTED = 2;
+    RESERVARION_DENIED = 3;
+}
+

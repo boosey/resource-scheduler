@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import boosey.ReservationStateC;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.smallrye.mutiny.Uni;
@@ -28,6 +29,7 @@ public class Reservation extends PanacheEntityBase {
     public String reserverId;
     public LocalDateTime startTime;
     public LocalDateTime endTime;
+    public ReservationStateC state;
 
     private static PanacheQuery<Reservation> findByResourceIdQuery(String resourceId) {
         return Reservation.find("resourceId = ?1", resourceId);

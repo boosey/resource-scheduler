@@ -1,0 +1,56 @@
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  name: reservations-command-grpc    
+  namespace: resource-scheduler
+  labels:
+    app: reservations-command-grpc
+    app.kubernetes.io/component: reservations-command-grpc
+    app.kubernetes.io/instance: reservations-command-grpc
+    app.kubernetes.io/part-of: Reservations
+    app.openshift.io/runtime-namespace: resource-scheduler  
+spec:
+  triggers:
+    - type: ConfigChange
+  selector:
+    app: reservations-command-grpc
+  replicas: 1
+  revisionHistoryLimit: 0  
+  template:
+    metadata:
+      labels:
+        app: reservations-command-grpc
+    spec:
+      containers:
+        - name: reservations-command-grpc
+          image: docker.io/boosey/reservations-command-grpc
+          ports:
+            - name: grpc-server
+              containerPort: 9000
+              protocol: TCP          
+          imagePullPolicy: Always
+      restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: reservations-command-grpc
+  namespace: resource-scheduler
+  labels:
+    app: reservations-command-grpc
+    app.kubernetes.io/component: reservations-command-grpc
+    app.kubernetes.io/instance: reservations-command-grpc
+    app.kubernetes.io/name: ''
+    app.kubernetes.io/part-of: Reservations
+    app.openshift.io/runtime: ''
+    app.openshift.io/runtime-version: latest
+spec:
+  ports:
+    - name: 9000-tcp
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+  selector:
+    app: reservations-command-grpc
+    deploymentconfig: reservations-command-grpc
+

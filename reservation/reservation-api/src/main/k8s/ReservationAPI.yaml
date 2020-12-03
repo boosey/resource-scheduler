@@ -27,3 +27,24 @@ spec:
             - containerPort: 8080
           imagePullPolicy: Always
       restartPolicy: Always
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: reservation-api
+  namespace: resource-scheduler
+  labels:
+    app: reservation-api
+    app.kubernetes.io/component: reservation-api
+    app.kubernetes.io/instance: reservation-api
+    app.kubernetes.io/part-of: Resource
+    app.openshift.io/runtime-version: latest
+spec:
+  ports:
+    - name: 8080-tcp
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: reservation-api
+    deploymentconfig: reservation-api

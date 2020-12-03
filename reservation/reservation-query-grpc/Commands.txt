@@ -1,0 +1,13 @@
+
+# Build for OCP and deploy 
+./mvnw clean package -Dquarkus.container-image.build=true -Dquarkus.kubernetes.deploy=true
+
+# Create deployment config
+kubectl create -n resource-scheduler -f src/main/k8s/ReservationQueryGrpc.yaml
+
+# Build locally and deploy
+mvn clean install \
+&& docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/reservations-query-grpc . \
+&& docker push docker.io/boosey/reservations-query-grpc \
+&& oc rollout latest deploymentconfig/reservations-query-grpc  
+
