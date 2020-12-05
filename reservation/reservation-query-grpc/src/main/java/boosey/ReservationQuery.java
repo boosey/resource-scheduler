@@ -1,8 +1,7 @@
 package boosey;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Singleton;
 import boosey.reservation.Reservation;
@@ -30,29 +29,23 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
     @Override
     public Uni<ListAllReply> listAll(ListAllRequest request) {
 
-        List<ReservationGrpcQ> reservationsGrpc = new ArrayList<>();
-
         return prepareReply( 
             () -> {
-                Reservation.<Reservation>streamAll()
-                    .forEach(r -> {
-                        reservationsGrpc.add(
-                            ReservationGrpcQ.newBuilder()
-                                .setId(r.getId())
-                                .setResourceId(r.getResourceId())
-                                .setReserverId(r.getReserverId())
-                                // .setStartTime(r.getStartTime().toString())
-                                // .setEndTime(r.getEndTime().toString())
-                                .setState(r.getState().name())
-                                .build()
-                        );
-                    });
-
-                ListAllReply reply = ListAllReply.newBuilder()
-                        .addAllReservations(reservationsGrpc)
-                        .build();
-                
-                return reply;
+                return ListAllReply.newBuilder().addAllReservations(
+                    Reservation.<Reservation>streamAll()
+                        .map((r) -> {
+                                return ReservationGrpcQ.newBuilder()
+                                    .setId(r.getId())
+                                    .setResourceId(r.getResourceId())
+                                    .setReserverId(r.getReserverId())
+                                    // .setStartTime(r.getStartTime().toString())
+                                    // .setEndTime(r.getEndTime().toString())
+                                    .setState(r.getState().name())
+                                    .build();                    
+                        })
+                        .collect(Collectors.toList())
+                    )
+                    .build();
             }            
         );
     }
