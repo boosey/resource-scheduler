@@ -1,27 +1,25 @@
 package boosey;
 
-import java.time.Duration;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
-import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import boosey.reservation.Reservation;
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
-import lombok.extern.slf4j.Slf4j;
+// import lombok.extern.slf4j.Slf4j;
 import io.smallrye.mutiny.Uni;
 
-@Slf4j
+// @Slf4j
 @Path("/reservation")
 @ApplicationScoped
 public class ReservationAPI {
@@ -49,23 +47,20 @@ public class ReservationAPI {
     @Path("/{id}")
     public Uni<ReservationGrpcQ> getReservation(@PathParam("id") String id) {
 
-        log.info("find id: " + id);
-
         return 
             reservationsQuery
                 .get(GetRequest.newBuilder().setId(id).build())
                 .onFailure(StatusRuntimeException.class)
                     .transform((e) -> {
                         if (((StatusRuntimeException)e).getStatus().getCode() == Code.NOT_FOUND)
-                            throw new NotFoundException();
+                            return new NotFoundException();
                         else
-                            throw new RuntimeException();
+                            return new RuntimeException();
                     })
                 .onItem()
                     .transform(r -> r.getReservation());
     }
 
-    
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     @Path("/count")
@@ -102,28 +97,34 @@ public class ReservationAPI {
 
     @POST
     public Uni<Response> addReservation(Reservation reservation) {
-        try {
-            log.info("about to call add reservation command");
-            AddReservationReply r = reservationsCommand.add(
-                AddReservationRequest.newBuilder()
-                    .setReservation(ReservationGrpcC.newBuilder()
-                        .setId(reservation.getId())
-                        .setResourceId(reservation.getResourceId())
-                        .setReserverId(reservation.getReserverId())  
-                        // .setStartTime(reservation.getStartTime().toString())  
-                        // .setEndTime(reservation.getEndTime().toString())
-                        .setState(Reservation.State.RESERVATION_REQUESTED.name())
-                    )
-                    .build()
+
+        // The transform at the end creates the Uni<Response> after
+        // getting a reply from the add call
+        // When RESTEasy subscribes the pipeline flows
+        return reservationsCommand.add(
+
+                    AddReservationRequest.newBuilder()
+                        .setReservation(ReservationGrpcC.newBuilder()
+                            .setId(reservation.getId())
+                            .setResourceId(reservation.getResourceId())
+                            .setReserverId(reservation.getReserverId())  
+                            // .setStartTime(reservation.getStartTime().toString())  
+                            // .setEndTime(reservation.getEndTime().toString())
+                            .setState(Reservation.State.RESERVATION_REQUESTED.name())
+                        )
+                        .build()
                 )
-                .await().atMost(Duration.ofMillis(5000));
-
-            log.info("returning from add reservation");
-            return Uni.createFrom().item(Response.accepted(r.getId()).build());
-
-        } catch (NotAcceptableException e) { 
-            return Uni.createFrom().item(Response.status(Status.CONFLICT).build());
-        }
+                .onFailure(StatusRuntimeException.class)
+                    .transform((e) -> {
+                        if (((StatusRuntimeException)e).getStatus().getCode() == Code.ALREADY_EXISTS)
+                            return new WebApplicationException(Response.Status.CONFLICT);
+                        else
+                            return new RuntimeException();
+                    })                    
+                .onItem() // Got reply from add
+                    .transform((reply) -> {
+                        return Response.accepted(reply.getId()).build();
+                    });
     }
     
     // @PUT
