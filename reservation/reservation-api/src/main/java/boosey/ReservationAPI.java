@@ -6,6 +6,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAcceptableException;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -14,6 +15,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import boosey.reservation.Reservation;
+import io.grpc.StatusRuntimeException;
+import io.grpc.Status.Code;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
 import lombok.extern.slf4j.Slf4j;
 import io.smallrye.mutiny.Uni;
@@ -23,9 +26,6 @@ import io.smallrye.mutiny.Uni;
 @ApplicationScoped
 public class ReservationAPI {
 
-    // @Inject ReservationQuery query;
-    // @Inject ReservationCommand command;
-
     @Inject
     @GrpcService("reservations_query_grpc")
     MutinyReservationQueryServiceGrpc.MutinyReservationQueryServiceStub reservationsQuery;  
@@ -34,30 +34,35 @@ public class ReservationAPI {
     @GrpcService("reservations_command_grpc")
     MutinyReservationCommandServiceGrpc.MutinyReservationCommandServiceStub reservationsCommand;  
 
+    @Inject
+    ReservationCustomAdapter reservationAdapter;
+
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
-    public Uni<List<ReservationGrpc>> listAll() {
+    public Uni<List<ReservationGrpcQ>> listAll() {
         return reservationsQuery
             .listAll(ListAllRequest.getDefaultInstance())
             .onItem()
-            .transform(r -> r.getReservationsList());
+                .transform(r -> r.getReservationsList());
     }
 
     @GET
-    @Produces(MediaType.TEXT_PLAIN)
     @Path("/{id}")
-    public Uni<ReservationGrpc> getReservation(@PathParam("id") String id) {
-        try {
-            return 
-                reservationsQuery
-                    .get(GetRequest.newBuilder().setId(id).build())
-                    .onItem()
-                    .transform(r -> r.getReservation());
+    public Uni<ReservationGrpcQ> getReservation(@PathParam("id") String id) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw e;
-        }
+        log.info("find id: " + id);
+
+        return 
+            reservationsQuery
+                .get(GetRequest.newBuilder().setId(id).build())
+                .onFailure(StatusRuntimeException.class)
+                    .transform((e) -> {
+                        if (((StatusRuntimeException)e).getStatus().getCode() == Code.NOT_FOUND)
+                            throw new NotFoundException();
+                        else
+                            throw new RuntimeException();
+                    })
+                .onItem()
+                    .transform(r -> r.getReservation());
     }
 
     
@@ -107,7 +112,7 @@ public class ReservationAPI {
                         .setReserverId(reservation.getReserverId())  
                         // .setStartTime(reservation.getStartTime().toString())  
                         // .setEndTime(reservation.getEndTime().toString())
-                        .setState(ReservationStateC.RESERVATION_REQUESTED)
+                        .setState(Reservation.State.RESERVATION_REQUESTED.name())
                     )
                     .build()
                 )
@@ -116,27 +121,11 @@ public class ReservationAPI {
             log.info("returning from add reservation");
             return Uni.createFrom().item(Response.accepted(r.getId()).build());
 
-        } catch (NotAcceptableException e) {
+        } catch (NotAcceptableException e) { 
             return Uni.createFrom().item(Response.status(Status.CONFLICT).build());
         }
     }
     
-    // @POST
-    // @Consumes(MediaType.APPLICATION_JSON)
-    // @Produces(MediaType.APPLICATION_JSON)
-    // public Uni<Response> addReservation(Reservation reservation) {
-
-    //     return new UniCreateWithEmitter<Response>( emitter -> {
-    //         try {
-    //             String reservationId = command.addReservation(reservation);
-    //             emitter.complete(Response.accepted(reservationId).build());
-
-    //         } catch (NotAcceptableException e) {
-    //             emitter.complete(Response.status(Status.NOT_FOUND).build());
-    //         }            
-    //     });        
-    // }
-
     // @PUT
     // @Consumes(MediaType.APPLICATION_JSON)
     // @Produces(MediaType.APPLICATION_JSON)

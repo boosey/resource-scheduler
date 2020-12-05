@@ -5,19 +5,16 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import boosey.ReservationStateC;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.operators.UniCreateWithEmitter;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.val;
 
-@NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 @ToString
 @Getter
@@ -29,7 +26,36 @@ public class Reservation extends PanacheEntityBase {
     public String reserverId;
     public LocalDateTime startTime;
     public LocalDateTime endTime;
-    public ReservationStateC state;
+    public State state;
+
+    public enum State {
+        RESERVATION_STATE_UNKNOWN,
+        RESERVATION_REQUESTED,
+        RESERVATION_ACCEPTED,
+        RESERVATION_DENIED
+    };
+
+    public Reservation() {
+        state = State.RESERVATION_STATE_UNKNOWN;
+    }
+
+    public void setStateUknown() {
+        state = State.RESERVATION_STATE_UNKNOWN;
+    }
+    public void setRequested() {
+        state = State.RESERVATION_REQUESTED;
+    }
+    public void setAccepted() {
+        state = State.RESERVATION_STATE_UNKNOWN;
+    }
+    public void setDenied() {
+        state = State.RESERVATION_DENIED;
+    }
+
+    public boolean isStateUnknown() {return state == State.RESERVATION_STATE_UNKNOWN;}    
+    public boolean isRequested() {return state == State.RESERVATION_REQUESTED;}    
+    public boolean isAccepted() {return state == State.RESERVATION_ACCEPTED;}    
+    public boolean isDenied() {return state == State.RESERVATION_DENIED;}    
 
     private static PanacheQuery<Reservation> findByResourceIdQuery(String resourceId) {
         return Reservation.find("resourceId = ?1", resourceId);

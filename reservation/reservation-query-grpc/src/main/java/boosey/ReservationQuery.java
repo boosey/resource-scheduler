@@ -3,10 +3,11 @@ package boosey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Singleton;
 import boosey.reservation.Reservation;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import lombok.extern.slf4j.Slf4j;
@@ -17,28 +18,32 @@ import lombok.extern.slf4j.Slf4j;
 public class ReservationQuery extends MutinyReservationQueryServiceGrpc.ReservationQueryServiceImplBase  {
     
     private <T> Uni<T> prepareReply(Supplier<T> supplier) {
-        log.info("in prepare reply");
+
         return Uni.createFrom()
             .item(() -> supplier.get())
-            .runSubscriptionOn(Infrastructure.getDefaultWorkerPool());
+            .runSubscriptionOn(Infrastructure.getDefaultExecutor())
+            .onItem()
+                .ifNull()
+                .failWith(new StatusRuntimeException(Status.NOT_FOUND));
     }
 
     @Override
     public Uni<ListAllReply> listAll(ListAllRequest request) {
 
-        List<ReservationGrpc> reservationsGrpc = new ArrayList<>();
+        List<ReservationGrpcQ> reservationsGrpc = new ArrayList<>();
 
         return prepareReply( 
             () -> {
                 Reservation.<Reservation>streamAll()
                     .forEach(r -> {
                         reservationsGrpc.add(
-                            ReservationGrpc.newBuilder()
+                            ReservationGrpcQ.newBuilder()
                                 .setId(r.getId())
                                 .setResourceId(r.getResourceId())
                                 .setReserverId(r.getReserverId())
-                                .setStartTime(r.getStartTime().toString())
-                                .setEndTime(r.getEndTime().toString())
+                                // .setStartTime(r.getStartTime().toString())
+                                // .setEndTime(r.getEndTime().toString())
+                                .setState(r.getState().name())
                                 .build()
                         );
                     });
@@ -57,22 +62,30 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
 
         return prepareReply( 
             () -> { 
+                log.info("find id: " + request.getId());
                 Reservation r = Reservation.<Reservation>findById(request.getId());
+                log.info("reservation: " + r);
 
-                return GetReply.newBuilder()
-                    .setReservation(
-                        ReservationGrpc.newBuilder()
-                        .setId(r.getId())
-                        .setResourceId(r.getResourceId())
-                        .setReserverId(r.getReserverId())
-                        .setStartTime(r.getStartTime().toString())
-                        .setEndTime(r.getEndTime().toString())
-                        .setState(r.getState())
-                        .build()                                         
-                    )
-                    .build();
+                if (r != null) {
+                    log.info("item not null returning a reply");
+                    return GetReply.newBuilder()
+                        .setReservation(
+                            ReservationGrpcQ.newBuilder()
+                            .setId(r.getId())
+                            .setResourceId(r.getResourceId())
+                            .setReserverId(r.getReserverId())
+                            // .setStartTime(r.getStartTime().toString())
+                            // .setEndTime(r.getEndTime().toString())
+                            .setState(r.getState().name())
+                            .build()                                         
+                        )
+                        .build();
+                } else {
+                    log.info("item is null - returning null");
+                    return null;
+                }
             }
-        );      
+        );    
     }   
 
     @Override 

@@ -1,8 +1,11 @@
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: addreservation
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default  
   filter:
     attributes:
       type: ADD_RESERVATION
@@ -12,11 +15,14 @@ spec:
       kind: Service
       name: reservation-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteallreservations
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default    
   filter:
     attributes:
       type: DELETE_ALL_RESERVATIONS
@@ -26,11 +32,14 @@ spec:
       kind: Service
       name: reservation-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deletereservation
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default    
   filter:
     attributes:
       type: DELETE_RESERVATION
@@ -40,11 +49,14 @@ spec:
       kind: Service
       name: reservation-command-event-processor
 ---
-apiVersion: eventing.knative.dev/v1alpha1
+apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: replacereservation
+  annotations:
+    knative-eventing-injection: enabled    
 spec:
+  broker: default    
   filter:
     attributes:
       type: REPLACE_RESERVATION

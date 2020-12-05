@@ -1,63 +1,68 @@
 package boosey;
 
-import boosey.ResourceSchedulerEvent.Source;
-import boosey.ResourceSchedulerEvent.Type;
-import boosey.reservation.Reservation;
+import javax.inject.Inject;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
+import io.quarkus.grpc.runtime.annotations.GrpcService;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ReservationCommandEventProcessor {
 
     // private static final Logger log = Logger.getLogger(ReservationCommandEventProcessor.class);
-
+    
+    @Inject
+    @GrpcService("eventsservicegrpc")                     
+    EventServiceGrpc.EventServiceBlockingStub grpcEvents;    
+    
     @Funq
     @CloudEventMapping(trigger = "ADD_RESERVATION")
-    public void handleAddReservation(Reservation reservation, @Context CloudEvent eventContext) {
+    public void handleAddReservation(EventData eventData, @Context CloudEvent eventContext) {
 
-        new ResourceSchedulerEvent<Reservation>(
-            Type.RESERVATION_ADDED,
-            Source.HANDLE_ADD_RESERVATION,
-            reservation)
-            .fire();
+        log.info("incoming string: " + eventData);
+        grpcEvents.fire(FireRequest.newBuilder()
+                        .setType(EventType.RESERVATION_ADDED)
+                        .setSource(EventSource.HANDLE_ADD_RESERVATION)
+                        .setEventData(eventData.value)
+                        .build());               
     }
 
     @Funq
     @CloudEventMapping(trigger = "REPLACE_RESERVATION")
-    public void handleReplaceReservation(Reservation reservation, @Context CloudEvent eventContext) {
+    public void handleReplaceReservation(EventData eventData, @Context CloudEvent eventContext) {
 
-        new ResourceSchedulerEvent<Reservation>(
-            Type.RESERVATION_REPLACED,
-            Source.HANDLE_REPLACE_RESERVATION,
-            reservation)
-            .fire();
+        log.info("incoming string: " + eventData);
+        grpcEvents.fire(FireRequest.newBuilder()
+                        .setType(EventType.RESERVATION_REPLACED)
+                        .setSource(EventSource.HANDLE_REPLACE_RESERVATION)
+                        .setEventData(eventData.value)
+                        .build());               
     }
          
     @Funq
     @CloudEventMapping(trigger = "DELETE_ALL_RESERVATIONS")
-    public void handleDeleteAllReservations(NoEventData eventData, @Context CloudEvent eventContext) {
+    public void handleDeleteAllReservations(EventData eventData, @Context CloudEvent eventContext) {
 
-        log.info("handling delete all event");
-        new ResourceSchedulerEvent<String>(
-            Type.ALL_AVAILABILITIES_DELETED,
-            Source.HANDLE_DELETE_ALL_AVAILABILITIES,
-            "")
-            .fire();
+        log.info("incoming string: " + eventData);
+        grpcEvents.fire(FireRequest.newBuilder()
+                        .setType(EventType.ALL_RESERVATIONS_DELETED)
+                        .setSource(EventSource.HANDLE_DELETE_ALL_RESERVATIONS)
+                        .setEventData(eventData.value)
+                        .build());                 
     }
 
     @Funq
     @CloudEventMapping(trigger = "DELETE_RESERVATION")
-    public void handleDeleteReservation(ItemIdData reservationId, @Context CloudEvent evtCtx) {
+    public void handleDeleteReservation(EventData eventData, @Context CloudEvent evtCtx) {
 
-        log.info("in command.handleDeleteReservation: " + reservationId);
-        new ResourceSchedulerEvent<ItemIdData>(
-            Type.RESERVATION_DELETED,
-            Source.HANDLE_DELETE_RESERVATION,
-            reservationId)
-            .fire();
+        log.info("incoming string: " + eventData);
+        grpcEvents.fire(FireRequest.newBuilder()
+                        .setType(EventType.RESERVATION_DELETED)
+                        .setSource(EventSource.HANDLE_DELETE_RESERVATION)
+                        .setEventData(eventData.value)
+                        .build());              
     }
 
 }

@@ -7,7 +7,6 @@ import javax.inject.Singleton;
 import javax.json.bind.Jsonb;
 import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.NotAcceptableException;
-
 import boosey.reservation.Reservation;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
 import io.smallrye.mutiny.Uni;
@@ -94,12 +93,14 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
                     r.setReserverId(rg.getReserverId());
                     // r.setStartTime(rg.getStartTime());
                     // r.setEndTime(rg.getEndTime());
-                    r.setState(rg.getState());
+                    r.setState(Reservation.State.valueOf(rg.getState()));
 
                     fireOnEventService(
                         EventType.ADD_RESERVATION, 
                         EventSource.RESERVATION_API, 
                         jsonb.toJson(r));
+
+                    log.info("after fire");
                   }
         );
 

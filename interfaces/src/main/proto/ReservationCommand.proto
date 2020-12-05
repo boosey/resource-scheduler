@@ -24,13 +24,7 @@ message ReservationGrpcC {
     string reserverId = 3;
     string startTime = 4;
     string endTime = 5;
-    ReservationStateC state = 6;
+    string state = 6;
 }
 
-enum ReservationStateC {
-    RESERVATION_STATE_UNKNOWN = 0;
-    RESERVATION_REQUESTED = 1;
-    RESERVATION_ACCEPTED = 2;
-    RESERVARION_DENIED = 3;
-}
 

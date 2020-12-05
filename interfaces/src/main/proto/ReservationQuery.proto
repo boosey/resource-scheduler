@@ -11,14 +11,13 @@ service ReservationQueryService {
     rpc get (GetRequest) returns (GetReply) {}
     rpc count (CountRequest) returns (CountReply) {}
     rpc exists (ExistsRequest) returns (ExistsReply) {}
-
 }
 
 message ListAllRequest {
 }
 
 message ListAllReply {
-    repeated ReservationGrpc reservations = 1;
+    repeated ReservationGrpcQ reservations = 1;
 }
 
 message GetRequest {
@@ -26,7 +25,7 @@ message GetRequest {
 }
 
 message GetReply {
-    ReservationGrpc reservation = 1;
+    ReservationGrpcQ reservation = 1;
 }
 
 message CountRequest {
@@ -44,19 +43,13 @@ message ExistsReply {
     bool exists = 1;
 }
 
-message ReservationGrpc {
+message ReservationGrpcQ {
     string id = 1;
     string resourceId = 2;
     string reserverId = 3;
     string startTime = 4;
     string endTime = 5;
-    ReservationState state = 6;
+    string state = 6;
 }
 
-enum ReservationState {
-    RESERVATION_STATE_UNKNOWN = 0;
-    RESERVATION_REQUESTED = 1;
-    RESERVATION_ACCEPTED = 2;
-    RESERVARION_DENIED = 3;
-}
 
