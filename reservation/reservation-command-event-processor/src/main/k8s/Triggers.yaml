@@ -2,8 +2,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: addreservation
-  annotations:
-    knative-eventing-injection: enabled    
+  
 spec:
   broker: default  
   filter:
@@ -19,8 +18,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteallreservations
-  annotations:
-    knative-eventing-injection: enabled    
+  
 spec:
   broker: default    
   filter:
@@ -36,8 +34,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deletereservation
-  annotations:
-    knative-eventing-injection: enabled    
+  
 spec:
   broker: default    
   filter:
@@ -53,8 +50,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: replacereservation
-  annotations:
-    knative-eventing-injection: enabled    
+  
 spec:
   broker: default    
   filter:

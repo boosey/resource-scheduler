@@ -8,14 +8,20 @@ kubectl create -n resource-scheduler -f src/main/k8s/MongoEventStore.yaml
 # Create deployment config
 kubectl create -n resource-scheduler -f src/main/k8s/EventServiceGrpc.yaml
 
+# Delete all Triggers
+kn trigger list | grep -Eo '^[^ ]+' | grep -v 'NAME' | xargs -n1  kn trigger delete 
+
+# Delete all completed pods
+oc get pods | grep Completed | grep -Eo '^[^ ]+' | xargs -n1 oc delete pod
+
+# Label namespace
+oc label namespace resource-scheduler eventing.knative.dev/injection=enabled
+
 # Build locally and deploy
 mvn clean install \
 && docker build -f src/main/docker/Dockerfile.jvm -t docker.io/boosey/eventsservicegrpc . \
 && docker push docker.io/boosey/eventsservicegrpc \
 && oc rollout latest deploymentconfig/eventsservicegrpc  
-
-
-
 
 
 curl -v "http://broker-ingress.knative-eventing.svc.cluster.local/resource-scheduler/default/" \

@@ -2,8 +2,6 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: allownersdeleted
-  annotations:
-    knative-eventing-injection: enabled     
 spec:
   broker: default
   filter:
@@ -19,8 +17,6 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: owneradded
-  annotations:
-    knative-eventing-injection: enabled     
 spec:
   broker: default
   filter:
@@ -35,9 +31,7 @@ spec:
 apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
-  name: ownerdeleted
-  annotations:
-    knative-eventing-injection: enabled     
+  name: ownerdeleted 
 spec:
   broker: default
   filter:
@@ -53,8 +47,6 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: ownerreplaced
-  annotations:
-    knative-eventing-injection: enabled     
 spec:
   broker: default
   filter:

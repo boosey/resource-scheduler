@@ -2,8 +2,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: addresource
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default  
   filter:
@@ -19,8 +18,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteallresources
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default  
   filter:
@@ -36,8 +34,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteresource
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default  
   filter:
@@ -53,8 +50,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: replaceresource
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default  
   filter:
@@ -70,8 +66,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: addavailability
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default 
   filter:
@@ -87,8 +82,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteallavailabilities
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default 
   filter:
@@ -104,8 +98,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: deleteavailability
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default 
   filter:
@@ -121,8 +114,7 @@ apiVersion: eventing.knative.dev/v1
 kind: Trigger
 metadata:
   name: replaceavailability
-  annotations:
-    knative-eventing-injection: enabled  
+
 spec:
   broker: default 
   filter:
