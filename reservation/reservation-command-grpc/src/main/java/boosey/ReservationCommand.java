@@ -4,21 +4,23 @@ import java.util.function.Supplier;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+// import javax.json.bind.Jsonb;
+// import javax.json.bind.JsonbBuilder;
 import javax.ws.rs.NotAcceptableException;
-import boosey.reservation.Reservation;
+import com.google.protobuf.ByteString;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import lombok.extern.slf4j.Slf4j;
+import boosey.ReservationCommon.ReservationGrpc;
+
 
 @Slf4j
 @Singleton
 @ActivateRequestContext
 public class ReservationCommand extends MutinyReservationCommandServiceGrpc.ReservationCommandServiceImplBase  {
 
-    private static Jsonb jsonb = JsonbBuilder.create();
+    // private static Jsonb jsonb = JsonbBuilder.create();
 
     @Inject
     @GrpcService("eventsservicegrpc")
@@ -48,7 +50,7 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
             });
     }    
 
-    private void invokeIfExists(String id, Runnable exists, Runnable doesntExist) {
+    private void invokeIfExistsOrElse(String id, Runnable exists, Runnable doesntExist) {
 
         log.info("in invokeIfExists");
         checkIfReservationExists(id).subscribe().with(
@@ -73,10 +75,19 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
             .build());
     }
 
+    private void fireOnEventService2(EventType type, EventSource source, ByteString eventData) {
+        log.info("calling grpcEvents 2");
+        grpcEvents.fire2(FireRequest.newBuilder()
+            .setType(type)
+            .setSource(source)
+            .setEventData(eventData.toStringUtf8())
+            .build());
+    }
+
     public Uni<AddReservationReply> add(AddReservationRequest request) {
 
         log.info("in command add");
-        invokeIfExists(
+        invokeIfExistsOrElse(
             request.getReservation().getId(), 
             () -> { 
                     log.info("throwing not acceptable");
@@ -85,20 +96,23 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
             () -> { 
                     log.info("about to fire ADD_RESERVATION");
 
-                    ReservationGrpcC rg = request.getReservation();
+                    ReservationGrpc rg = request.getReservation();
 
-                    Reservation r = new Reservation();
-                    r.setId(rg.getId());
-                    r.setResourceId(rg.getResourceId());
-                    r.setReserverId(rg.getReserverId());
-                    // r.setStartTime(rg.getStartTime());
-                    // r.setEndTime(rg.getEndTime());
-                    r.setState(Reservation.State.valueOf(rg.getState()));
+                    // Reservation r = new Reservation();
+                    // r.setId(rg.getId());
+                    // r.setResourceId(rg.getResourceId());
+                    // r.setReserverId(rg.getReserverId());
+                    // // r.setStartTime(rg.getStartTime());
+                    // // r.setEndTime(rg.getEndTime());
+                    // // r.setState(Reservation.State.valueOf(rg.getState()));
 
-                    fireOnEventService(
+                    log.info("rg string utf: " + rg.toByteString().toStringUtf8());
+
+                    fireOnEventService2(
                         EventType.ADD_RESERVATION, 
                         EventSource.RESERVATION_API, 
-                        jsonb.toJson(r));
+                        rg.toByteString());
+                        // jsonb.toJson(r));
 
                     log.info("after fire");
                   }

@@ -10,6 +10,7 @@ import io.grpc.StatusRuntimeException;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
 import lombok.extern.slf4j.Slf4j;
+import boosey.ReservationCommon.ReservationGrpc;
 
 @Slf4j
 @Singleton
@@ -34,7 +35,7 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
                 return ListAllReply.newBuilder().addAllReservations(
                     Reservation.<Reservation>streamAll()
                         .map((r) -> {
-                                return ReservationGrpcQ.newBuilder()
+                                return ReservationGrpc.newBuilder()
                                     .setId(r.getId())
                                     .setResourceId(r.getResourceId())
                                     .setReserverId(r.getReserverId())
@@ -63,7 +64,7 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
                     log.info("item not null returning a reply");
                     return GetReply.newBuilder()
                         .setReservation(
-                            ReservationGrpcQ.newBuilder()
+                            ReservationGrpc.newBuilder()
                             .setId(r.getId())
                             .setResourceId(r.getResourceId())
                             .setReserverId(r.getReserverId())

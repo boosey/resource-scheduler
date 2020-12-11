@@ -1,39 +1,46 @@
 package boosey;
 
-import javax.json.bind.Jsonb;
-import javax.json.bind.JsonbBuilder;
+// import javax.json.bind.Jsonb;
+// import javax.json.bind.JsonbBuilder;
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
+
+import com.google.protobuf.ByteString;
+import com.google.protobuf.InvalidProtocolBufferException;
+
+import boosey.ReservationCommon.ReservationGrpc;
 import boosey.reservation.Reservation;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
 
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 
-// @Slf4j
+@Slf4j
 public class ReservationQueryEventProcessor {
 
-    private static Jsonb jsonb = JsonbBuilder.create();        
+    // private static Jsonb jsonb = JsonbBuilder.create();        
 
     @Funq
     @CloudEventMapping(trigger = "RESERVATION_ADDED")
     @Transactional
-    public void handleReservationAdded(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException {
+    public void handleReservationAdded(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException, InvalidProtocolBufferException {
 
-        Reservation resIn =  jsonb.fromJson(eventData.value, Reservation.class);
+        log.info("saving Reservation");
+        
+        ReservationGrpc resIn =  ReservationGrpc.parseFrom(ByteString.copyFromUtf8(eventData.getValue()));
         Reservation r = new Reservation();
         r.setId(resIn.getId());
         r.setResourceId(resIn.getResourceId());
         r.setReserverId(resIn.getReserverId());
-        r.setStartTime(resIn.getStartTime());
-        r.setEndTime(resIn.getEndTime());
-        r.setState(resIn.getState());
+        // r.setStartTime(resIn.getStartTime());
+        // r.setEndTime(resIn.getEndTime());
+        // r.setState(resIn.getState());
         r.persist();
      
     }

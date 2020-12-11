@@ -55,6 +55,17 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
                 .build();
     }
 
+    private FireRequest prepareRequest2(FireRequest evt) {
+        return FireRequest.newBuilder()
+                .setEventId(defaultToUUIDIfUnset(evt.getEventId()))
+                .setType(evt.getType())
+                .setSpecVersion(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
+                .setSource(evt.getSource())
+                // .setSubject(defaultIfUnset(evt.getSpecVersion(), "null"))
+                .setEventData(evt.getEventData())
+                .build();
+    }
+
     @Override
     public Uni<FireReply> fire(FireRequest evtIn) {
         try {
@@ -69,6 +80,45 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
             log.info("------------------------------------------------------------------------------");
 
             knativeEventServiceBroker.fire(
+                evt.getEventId(), 
+                evt.getType().name(), 
+                evt.getSpecVersion(),
+                evt.getSource().name(), 
+                // evt.getSubject(), 
+                MediaType.APPLICATION_JSON, 
+                evt.getEventData());
+         
+            this.getCollection().insertOne(new Document()
+                .append("type", evt.getType().name())
+                .append("source", evt.getSource().name())
+                .append("specVersion", evt.getSpecVersion())
+                .append("subject", evt.getSubject())
+                .append("time", new Date())
+                .append("eventData", evt.getEventData()));  
+
+            return Uni.createFrom().item(
+                FireReply.newBuilder().setEventId(evt.getEventId()).build());
+                
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }    
+
+    @Override
+    public Uni<FireReply> fire2(FireRequest evtIn) {
+        try {
+
+            FireRequest evt = prepareRequest(evtIn);
+            log.info("------------------------------------------------------------------------------");
+            log.info("eventId: " + evt.getEventId());
+            log.info("event type / source: " + evt.getType().name() + " / " + evt.getSource().name());
+            log.info("spec version: " + evt.getSpecVersion());
+            log.info("media type: " + MediaType.APPLICATION_JSON);
+            log.info("data: " + evt.getEventData());
+            log.info("------------------------------------------------------------------------------");
+
+            knativeEventServiceBroker.fire2(
                 evt.getEventId(), 
                 evt.getType().name(), 
                 evt.getSpecVersion(),

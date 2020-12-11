@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import public "ReservationCommon.proto";
+
 option java_multiple_files = true;
 option java_package = "boosey";
 option java_outer_classname = "ReservationQueryProto";
@@ -17,7 +19,7 @@ message ListAllRequest {
 }
 
 message ListAllReply {
-    repeated ReservationGrpcQ reservations = 1;
+    repeated reservationcommon.ReservationGrpc reservations = 1;
 }
 
 message GetRequest {
@@ -25,7 +27,7 @@ message GetRequest {
 }
 
 message GetReply {
-    ReservationGrpcQ reservation = 1;
+    reservationcommon.ReservationGrpc reservation = 1;
 }
 
 message CountRequest {
@@ -41,15 +43,6 @@ message ExistsRequest {
 
 message ExistsReply {
     bool exists = 1;
-}
-
-message ReservationGrpcQ {
-    string id = 1;
-    string resourceId = 2;
-    string reserverId = 3;
-    string startTime = 4;
-    string endTime = 5;
-    string state = 6;
 }
 
 

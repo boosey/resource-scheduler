@@ -7,5 +7,5 @@ mvn clean install \
 && kn service delete reservation-command-event-processor \
 && kn service create reservation-command-event-processor -n resource-scheduler --image docker.io/boosey/reservation-command-event-processor
 
-# Create Trigger
+# Create Triggers
 kubectl apply -n resource-scheduler -f src/main/k8s/Triggers.yaml

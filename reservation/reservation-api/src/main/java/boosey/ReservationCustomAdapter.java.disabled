@@ -7,6 +7,7 @@ import javax.json.bind.JsonbConfig;
 import javax.json.bind.adapter.JsonbAdapter;
 
 import io.quarkus.jsonb.JsonbConfigCustomizer;
+import reservationcommon.ReservationCommon.ReservationGrpc;
 
 @Singleton
 public class ReservationCustomAdapter implements JsonbConfigCustomizer {
@@ -15,9 +16,9 @@ public class ReservationCustomAdapter implements JsonbConfigCustomizer {
         config.withAdapters(new ReservationAdapter());
     }
 
-public class ReservationAdapter implements JsonbAdapter<ReservationGrpcQ, JsonObject> {
+public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObject> {
     @Override
-    public JsonObject adaptToJson(ReservationGrpcQ r) throws Exception {
+    public JsonObject adaptToJson(ReservationGrpc r) throws Exception {
         return Json.createObjectBuilder()
             .add("id", r.getId())
             .add("resourceId", r.getResourceId())
@@ -29,8 +30,8 @@ public class ReservationAdapter implements JsonbAdapter<ReservationGrpcQ, JsonOb
     }
 
     @Override
-    public ReservationGrpcQ adaptFromJson(JsonObject adapted) throws Exception {
-        ReservationGrpcQ r = ReservationGrpcQ.newBuilder()
+    public ReservationGrpc adaptFromJson(JsonObject adapted) throws Exception {
+        ReservationGrpc r = ReservationGrpc.newBuilder()
             .setId(adapted.getString("id"))
             .setResourceId(adapted.getString("resourceId"))
             .setReserverId(adapted.getString("reserverId"))

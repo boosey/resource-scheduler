@@ -13,14 +13,16 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import boosey.reservation.Reservation;
+import boosey.reservation.ReservationCustomAdapter;
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
-// import lombok.extern.slf4j.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 import io.smallrye.mutiny.Uni;
+import boosey.ReservationCommon.ReservationGrpc;
 
-// @Slf4j
-@Path("/reservation")
+@Slf4j
+@Path("/reservations")
 @ApplicationScoped
 public class ReservationAPI {
 
@@ -36,7 +38,7 @@ public class ReservationAPI {
     ReservationCustomAdapter reservationAdapter;
 
     @GET
-    public Uni<List<ReservationGrpcQ>> listAll() {
+    public Uni<List<ReservationGrpc>> listAll() {
         return reservationsQuery
             .listAll(ListAllRequest.getDefaultInstance())
             .onItem()
@@ -45,7 +47,7 @@ public class ReservationAPI {
 
     @GET
     @Path("/{id}")
-    public Uni<ReservationGrpcQ> getReservation(@PathParam("id") String id) {
+    public Uni<ReservationGrpc> getReservation(@PathParam("id") String id) {
 
         return 
             reservationsQuery
@@ -98,13 +100,14 @@ public class ReservationAPI {
     @POST
     public Uni<Response> addReservation(Reservation reservation) {
 
+        log.info("add Reservation");
         // The transform at the end creates the Uni<Response> after
         // getting a reply from the add call
         // When RESTEasy subscribes the pipeline flows
         return reservationsCommand.add(
 
                     AddReservationRequest.newBuilder()
-                        .setReservation(ReservationGrpcC.newBuilder()
+                        .setReservation(ReservationGrpc.newBuilder()
                             .setId(reservation.getId())
                             .setResourceId(reservation.getResourceId())
                             .setReserverId(reservation.getReserverId())  

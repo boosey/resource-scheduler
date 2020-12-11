@@ -21,11 +21,12 @@ public class ReservationCommandEventProcessor {
     @CloudEventMapping(trigger = "ADD_RESERVATION")
     public void handleAddReservation(EventData eventData, @Context CloudEvent eventContext) {
 
-        log.info("incoming string: " + eventData);
+        log.info("incoming string: " + eventData.getValue());
+        
         grpcEvents.fire(FireRequest.newBuilder()
                         .setType(EventType.RESERVATION_ADDED)
                         .setSource(EventSource.HANDLE_ADD_RESERVATION)
-                        .setEventData(eventData.value)
+                        .setEventData(eventData.getValue())
                         .build());               
     }
 

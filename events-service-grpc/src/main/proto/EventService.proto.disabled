@@ -8,6 +8,7 @@ package eventservice;
 
 service EventService {
     rpc fire (FireRequest) returns (FireReply) {}
+    rpc fire2 (FireRequestNew) returns (FireReply) {}
 }
 
 message FireRequest {
@@ -17,6 +18,15 @@ message FireRequest {
     string specVersion = 4;
     string subject = 5;
     string eventData = 6;
+}
+
+message FireRequestNew {
+    string eventId = 1;
+    EventType type = 2;
+    EventSource source = 3;
+    string specVersion = 4;
+    string subject = 5;
+    bytes eventData = 6;
 }
 
 message FireReply {

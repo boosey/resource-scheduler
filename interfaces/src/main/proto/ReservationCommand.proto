@@ -1,5 +1,7 @@
 syntax = "proto3";
 
+import public "ReservationCommon.proto";
+
 option java_multiple_files = true;
 option java_package = "boosey";
 option java_outer_classname = "ReservationCommandProto";
@@ -11,20 +13,12 @@ service ReservationCommandService {
 }
 
 message AddReservationRequest {
-    ReservationGrpcC reservation = 1;
+    reservationcommon.ReservationGrpc reservation = 1;
 }
 
 message AddReservationReply {
     string id = 1;
 }
 
-message ReservationGrpcC {
-    string id = 1;
-    string resourceId = 2;
-    string reserverId = 3;
-    string startTime = 4;
-    string endTime = 5;
-    string state = 6;
-}
 
 

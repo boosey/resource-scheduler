@@ -24,4 +24,19 @@ public interface KnativeEventServiceBroker {
         // @HeaderParam("Ce-Subject") String eventSubject,  
         @HeaderParam("Content-Type") String eventContentType,                 
         String eventData);
+
+      @POST
+    @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    Response fire2(
+        @HeaderParam("Ce-Id") String eventId, 
+        @HeaderParam("Ce-Type") String eventType, 
+        @HeaderParam("Ce-Specversion") String eventSpecVersion, 
+        @HeaderParam("Ce-Source") String eventSource,  
+        // @HeaderParam("Ce-Subject") String eventSubject,  
+        @HeaderParam("Content-Type") String eventContentType,                 
+        String eventData);
+
+        
 }
