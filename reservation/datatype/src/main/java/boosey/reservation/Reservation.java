@@ -5,6 +5,10 @@ import java.util.List;
 import java.util.UUID;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import com.google.protobuf.Timestamp;
+
+import boosey.ReservationCommon.State;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.smallrye.mutiny.Uni;
@@ -24,16 +28,9 @@ public class Reservation extends PanacheEntityBase {
     @Id public String id = UUID.randomUUID().toString();
     public String resourceId;
     public String reserverId;
-    public LocalDateTime startTime;
-    public LocalDateTime endTime;
+    public Timestamp startTime;
+    public Timestamp endTime;
     public State state;
-
-    public enum State {
-        RESERVATION_STATE_UNKNOWN,
-        RESERVATION_REQUESTED,
-        RESERVATION_ACCEPTED,
-        RESERVATION_DENIED
-    };
 
     public Reservation() {
         state = State.RESERVATION_STATE_UNKNOWN;

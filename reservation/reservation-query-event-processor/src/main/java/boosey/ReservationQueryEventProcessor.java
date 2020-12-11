@@ -24,15 +24,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ReservationQueryEventProcessor {
 
-    // private static Jsonb jsonb = JsonbBuilder.create();        
-
     @Funq
     @CloudEventMapping(trigger = "RESERVATION_ADDED")
     @Transactional
     public void handleReservationAdded(EventData eventData, @Context CloudEvent evtCtx) throws SecurityException, IllegalStateException, NotSupportedException, SystemException, RollbackException, HeuristicMixedException, HeuristicRollbackException, InvalidProtocolBufferException {
 
         log.info("saving Reservation");
-        
+
         ReservationGrpc resIn =  ReservationGrpc.parseFrom(ByteString.copyFromUtf8(eventData.getValue()));
         Reservation r = new Reservation();
         r.setId(resIn.getId());
@@ -40,7 +38,7 @@ public class ReservationQueryEventProcessor {
         r.setReserverId(resIn.getReserverId());
         // r.setStartTime(resIn.getStartTime());
         // r.setEndTime(resIn.getEndTime());
-        // r.setState(resIn.getState());
+        r.setState(resIn.getState());
         r.persist();
      
     }

@@ -7,6 +7,7 @@ import javax.json.bind.adapter.JsonbAdapter;
 import com.google.protobuf.Timestamp;
 import lombok.extern.slf4j.Slf4j;
 import boosey.ReservationCommon.ReservationGrpc;
+import boosey.ReservationCommon.State;
 import boosey.ReservationCommon.ReservationGrpc.Builder;
 
 import java.time.LocalDateTime;
@@ -48,7 +49,7 @@ public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObj
         }
 
         if (r.getState() != null)
-            b.add("state", r.getState());
+            b.add("state", r.getState().getNumber());
 
         return b.build();
     }
@@ -85,7 +86,7 @@ public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObj
                 .setSeconds(Long.parseLong(adapted.getString("endTime"))));
 
         if (notNull(adapted, "state"))
-            r.setState(adapted.getString("state"));
+            r.setState(State.forNumber(adapted.getInt("state")));
 
         return r.build();
     }

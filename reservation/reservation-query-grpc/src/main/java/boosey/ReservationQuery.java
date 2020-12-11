@@ -4,6 +4,9 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Singleton;
+
+import com.google.protobuf.Timestamp;
+
 import boosey.reservation.Reservation;
 import io.grpc.Status;
 import io.grpc.StatusRuntimeException;
@@ -41,7 +44,7 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
                                     .setReserverId(r.getReserverId())
                                     // .setStartTime(r.getStartTime().toString())
                                     // .setEndTime(r.getEndTime().toString())
-                                    .setState(r.getState().name())
+                                    .setState(r.getState())
                                     .build();                    
                         })
                         .collect(Collectors.toList())
@@ -68,9 +71,9 @@ public class ReservationQuery extends MutinyReservationQueryServiceGrpc.Reservat
                             .setId(r.getId())
                             .setResourceId(r.getResourceId())
                             .setReserverId(r.getReserverId())
-                            // .setStartTime(r.getStartTime().toString())
-                            // .setEndTime(r.getEndTime().toString())
-                            .setState(r.getState().name())
+                            // .setStartTime(Timestamp.newBuilder().setSeconds(r.getStartTime().getSecond()))
+                            // .setEndTime(Timestamp.newBuilder().setSeconds(r.getEndTime().getSecond()))
+                            .setState(r.getState())
                             .build()                                         
                         )
                         .build();

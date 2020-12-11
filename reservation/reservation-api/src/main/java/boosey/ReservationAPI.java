@@ -12,6 +12,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import com.google.protobuf.Timestamp;
+
 import boosey.reservation.Reservation;
 import boosey.reservation.ReservationCustomAdapter;
 import io.grpc.StatusRuntimeException;
@@ -20,6 +23,7 @@ import io.quarkus.grpc.runtime.annotations.GrpcService;
 import lombok.extern.slf4j.Slf4j;
 import io.smallrye.mutiny.Uni;
 import boosey.ReservationCommon.ReservationGrpc;
+import boosey.ReservationCommon.State;
 
 @Slf4j
 @Path("/reservations")
@@ -111,9 +115,9 @@ public class ReservationAPI {
                             .setId(reservation.getId())
                             .setResourceId(reservation.getResourceId())
                             .setReserverId(reservation.getReserverId())  
-                            // .setStartTime(reservation.getStartTime().toString())  
-                            // .setEndTime(reservation.getEndTime().toString())
-                            .setState(Reservation.State.RESERVATION_REQUESTED.name())
+                            .setStartTime(Timestamp.getDefaultInstance())  
+                            .setEndTime(Timestamp.getDefaultInstance())
+                            .setState(State.RESERVATION_REQUESTED)
                         )
                         .build()
                 )
