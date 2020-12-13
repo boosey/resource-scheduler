@@ -1,5 +1,6 @@
 package boosey;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -12,11 +13,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
-import com.google.protobuf.Timestamp;
-
-import boosey.reservation.Reservation;
-import boosey.reservation.ReservationCustomAdapter;
 import io.grpc.StatusRuntimeException;
 import io.grpc.Status.Code;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
@@ -102,9 +98,10 @@ public class ReservationAPI {
     }
 
     @POST
-    public Uni<Response> addReservation(Reservation reservation) {
+    public Uni<Response> addReservation(ReservationGrpc reservation) {
 
         log.info("add Reservation");
+        log.info("local date time string: " + LocalDateTime.now().toString());
         // The transform at the end creates the Uni<Response> after
         // getting a reply from the add call
         // When RESTEasy subscribes the pipeline flows
@@ -115,8 +112,8 @@ public class ReservationAPI {
                             .setId(reservation.getId())
                             .setResourceId(reservation.getResourceId())
                             .setReserverId(reservation.getReserverId())  
-                            .setStartTime(Timestamp.getDefaultInstance())  
-                            .setEndTime(Timestamp.getDefaultInstance())
+                            .setStartTime(LocalDateTime.now().toString())  
+                            .setEndTime(LocalDateTime.now().toString())
                             .setState(State.RESERVATION_REQUESTED)
                         )
                         .build()
@@ -139,7 +136,7 @@ public class ReservationAPI {
     // @Produces(MediaType.APPLICATION_JSON)
     // @Path("/{reservationId}")
     // public Uni<Response> replaceReservation(@PathParam("reservationId") String reservationId, 
-    //                                         Reservation reservation) {
+    //                                         ReservationGrpc reservation) {
         
     //     log.info("command.replaceReservation");
 

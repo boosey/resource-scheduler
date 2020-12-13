@@ -1,24 +1,21 @@
 package boosey;
 
-// import javax.json.bind.Jsonb;
-// import javax.json.bind.JsonbBuilder;
+import java.time.LocalDateTime;
+
 import javax.transaction.HeuristicMixedException;
 import javax.transaction.HeuristicRollbackException;
 import javax.transaction.NotSupportedException;
 import javax.transaction.RollbackException;
 import javax.transaction.SystemException;
 import javax.transaction.Transactional;
-
 import com.google.protobuf.ByteString;
 import com.google.protobuf.InvalidProtocolBufferException;
-
 import boosey.ReservationCommon.ReservationGrpc;
 import boosey.reservation.Reservation;
 import io.quarkus.funqy.Context;
 import io.quarkus.funqy.Funq;
 import io.quarkus.funqy.knative.events.CloudEvent;
 import io.quarkus.funqy.knative.events.CloudEventMapping;
-
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -36,8 +33,8 @@ public class ReservationQueryEventProcessor {
         r.setId(resIn.getId());
         r.setResourceId(resIn.getResourceId());
         r.setReserverId(resIn.getReserverId());
-        // r.setStartTime(resIn.getStartTime());
-        // r.setEndTime(resIn.getEndTime());
+        r.setStartTime(LocalDateTime.parse(resIn.getStartTime()));
+        r.setEndTime(LocalDateTime.parse(resIn.getEndTime()));
         r.setState(resIn.getState());
         r.persist();
      

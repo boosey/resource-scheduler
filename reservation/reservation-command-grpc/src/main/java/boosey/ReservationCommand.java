@@ -1,11 +1,14 @@
 package boosey;
 
+import java.util.UUID;
 import java.util.function.Supplier;
 import javax.enterprise.context.control.ActivateRequestContext;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import javax.ws.rs.NotAcceptableException;
 import com.google.protobuf.ByteString;
+
+import boosey.ReservationCommon.ReservationGrpc;
 import io.quarkus.grpc.runtime.annotations.GrpcService;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.infrastructure.Infrastructure;
@@ -72,19 +75,25 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
     public Uni<AddReservationReply> add(AddReservationRequest request) {
 
         log.info("in command add");
+        ReservationGrpc r = ReservationGrpc.newBuilder(request.getReservation())
+                                .setId(UUID.randomUUID().toString())
+                                .build();
+
         invokeIfExistsOrElse(
-            request.getReservation().getId(), 
+            r.getId(), 
             () -> { 
                     log.info("throwing not acceptable");
                     throw new NotAcceptableException();
                   }, 
             () -> { 
                     log.info("about to fire ADD_RESERVATION");
-
+                    log.info("start: " + r.getStartTime());
+                    log.info("end: " + r.getEndTime());
+                    log.info("bytestring: " + r.toByteString());
                     fireOnEventService2(
                         EventType.ADD_RESERVATION, 
                         EventSource.RESERVATION_API, 
-                        request.getReservation().toByteString());
+                        r.toByteString());
 
                     log.info("after fire");
                   }
@@ -93,7 +102,7 @@ public class ReservationCommand extends MutinyReservationCommandServiceGrpc.Rese
         log.info("about preparing reply and returning");
         return prepareReply(() -> 
                 AddReservationReply.newBuilder()
-                    .setId(request.getReservation().getId())
+                    .setId(r.getId())
                     .build());
     }       
 }

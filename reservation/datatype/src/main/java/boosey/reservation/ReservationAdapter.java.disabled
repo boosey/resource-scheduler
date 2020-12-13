@@ -4,23 +4,13 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.bind.adapter.JsonbAdapter;
-import com.google.protobuf.Timestamp;
 import lombok.extern.slf4j.Slf4j;
 import boosey.ReservationCommon.ReservationGrpc;
 import boosey.ReservationCommon.State;
 import boosey.ReservationCommon.ReservationGrpc.Builder;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-
 @Slf4j
-public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObject> {
-
-    private LocalDateTime localDateTime(Timestamp ts) {
-
-        return LocalDateTime.ofEpochSecond(ts.getSeconds(), ts.getNanos(), 
-            ZoneOffset.of(ZoneOffset.systemDefault().getId()));
-    }    
+public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObject> {  
 
     @Override
     public JsonObject adaptToJson(ReservationGrpc r) throws Exception {
@@ -40,12 +30,12 @@ public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObj
 
         if (r.getStartTime() != null) {
             log.info("startTime: " + r.getStartTime());
-            // b.add("startTime", localDateTime(r.getStartTime()).toString());
+            b.add("startTime", r.getStartTime());
         }
 
         if (r.getEndTime() != null) {
-            log.info("endTime: " + r.getStartTime());
-            // b.add("endTime", localDateTime(r.getEndTime()).toString());
+            log.info("endTime: " + r.getEndTime());
+            b.add("endTime", r.getEndTime());
         }
 
         if (r.getState() != null)
@@ -77,13 +67,10 @@ public class ReservationAdapter implements JsonbAdapter<ReservationGrpc, JsonObj
             r.setReserverId(adapted.getString("reserverId"));
 
         if (notNull(adapted, "startTime"))
-            r.setStartTime(Timestamp.newBuilder()
-                .setSeconds(Long.parseLong(adapted.getString("startTime")))
-                .build());
+            r.setStartTime(adapted.getString("startTime"));
 
         if (notNull(adapted, "endTime"))
-            r.setEndTime(Timestamp.newBuilder()
-                .setSeconds(Long.parseLong(adapted.getString("endTime"))));
+            r.setEndTime(adapted.getString("endTime"));
 
         if (notNull(adapted, "state"))
             r.setState(State.forNumber(adapted.getInt("state")));

@@ -55,16 +55,16 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
                 .build();
     }
 
-    private FireRequest prepareRequest2(FireRequest evt) {
-        return FireRequest.newBuilder()
-                .setEventId(defaultToUUIDIfUnset(evt.getEventId()))
-                .setType(evt.getType())
-                .setSpecVersion(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
-                .setSource(evt.getSource())
-                // .setSubject(defaultIfUnset(evt.getSpecVersion(), "null"))
-                .setEventData(evt.getEventData())
-                .build();
-    }
+    // private FireRequest prepareRequest2(FireRequest evt) {
+    //     return FireRequest.newBuilder()
+    //             .setEventId(defaultToUUIDIfUnset(evt.getEventId()))
+    //             .setType(evt.getType())
+    //             .setSpecVersion(defaultIfUnset(evt.getSpecVersion(), defaultSpecVersion))
+    //             .setSource(evt.getSource())
+    //             // .setSubject(defaultIfUnset(evt.getSpecVersion(), "null"))
+    //             .setEventData(evt.getEventData())
+    //             .build();
+    // }
 
     @Override
     public Uni<FireReply> fire(FireRequest evtIn) {
@@ -110,6 +110,7 @@ public class EventService extends MutinyEventServiceGrpc.EventServiceImplBase {
         try {
 
             FireRequest evt = prepareRequest(evtIn);
+            
             log.info("------------------------------------------------------------------------------");
             log.info("eventId: " + evt.getEventId());
             log.info("event type / source: " + evt.getType().name() + " / " + evt.getSource().name());

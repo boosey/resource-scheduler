@@ -30,11 +30,11 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
-    <dependency>
+    <!-- <dependency>
       <groupId>boosey</groupId>
       <artifactId>reservation</artifactId>
       <version>1.0.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>     -->
     <dependency>
       <groupId>boosey</groupId>
       <artifactId>events</artifactId>
